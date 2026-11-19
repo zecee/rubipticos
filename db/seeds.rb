@@ -1,9 +1,24 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+require "json"
+
+catalog = JSON.parse(Rails.root.join("db/seeds/cryptics.json").read)
+
+Cryptic.transaction do
+  catalog.fetch("cripticos").each do |entry|
+    cryptic = Cryptic.find_or_initialize_by(external_id: entry.fetch("id"))
+    cryptic.assign_attributes(
+      clue: entry.fetch("enunciado"),
+      source_enumeration: entry.fetch("enumeracion"),
+      answer: entry.fetch("respuesta"),
+      definitions: entry.fetch("definiciones"),
+      indicators: entry.fetch("indicadores"),
+      material: entry.fetch("material"),
+      puzzle_type: entry.fetch("tipo"),
+      difficulty: entry.fetch("dificultad"),
+      hint: entry.fetch("ayuda"),
+      explanation: entry.fetch("explicacion"),
+      author: entry.fetch("autor"),
+      source: catalog.fetch("fuente")
+    )
+    cryptic.save!
+  end
+end
