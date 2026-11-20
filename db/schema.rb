@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_18_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_20_225159) do
   create_table "cryptics", force: :cascade do |t|
     t.string "external_id", null: false
     t.text "clue", null: false
@@ -29,4 +29,41 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_18_000000) do
     t.datetime "updated_at", null: false
     t.index ["external_id"], name: "index_cryptics_on_external_id", unique: true
   end
+
+  create_table "sessions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "sync_runs", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "source_url", null: false
+    t.string "status", null: false
+    t.string "version"
+    t.integer "created_count", default: 0, null: false
+    t.integer "updated_count", default: 0, null: false
+    t.integer "deactivated_count", default: 0, null: false
+    t.integer "rejected_count", default: 0, null: false
+    t.json "rejections", default: [], null: false
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status", "source_url"], name: "index_sync_runs_on_status_and_source_url"
+    t.index ["user_id"], name: "index_sync_runs_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email_address", null: false
+    t.string "password_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email_address"], name: "index_users_on_email_address", unique: true
+  end
+
+  add_foreign_key "sessions", "users"
+  add_foreign_key "sync_runs", "users"
 end
