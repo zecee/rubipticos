@@ -6,7 +6,7 @@ module Cryptics
     class FetchError < Error; end
     class InvalidPayloadError < Error; end
 
-    REQUEST_TIMEOUT = 10 # seconds
+    REQUEST_TIMEOUT = 10 # segundos
 
     def initialize(source_url:, user: nil)
       @source_url = source_url.to_s
@@ -29,7 +29,7 @@ module Cryptics
 
     def fetch_payload
       uri = URI.parse(@source_url)
-      raise FetchError, "invalid source URL" unless uri.is_a?(URI::HTTP) && uri.host.present?
+      raise FetchError, "la URL de la fuente no es válida" unless uri.is_a?(URI::HTTP) && uri.host.present?
 
       response = Net::HTTP.start(
         uri.host, uri.port,
@@ -38,22 +38,22 @@ module Cryptics
         read_timeout: REQUEST_TIMEOUT
       ) { |http| http.request(Net::HTTP::Get.new(uri)) }
 
-      raise FetchError, "unexpected response: HTTP #{response.code}" unless response.is_a?(Net::HTTPSuccess)
+      raise FetchError, "respuesta inesperada de la fuente (HTTP #{response.code})" unless response.is_a?(Net::HTTPSuccess)
 
       payload = JSON.parse(response.body)
       validate_payload!(payload)
       payload
     rescue URI::InvalidURIError
-      raise FetchError, "invalid source URL"
+      raise FetchError, "la URL de la fuente no es válida"
     rescue Timeout::Error, SocketError, SystemCallError, IOError, OpenSSL::SSL::SSLError, Net::ProtocolError => e
-      raise FetchError, "could not fetch the catalog: #{e.message}"
+      raise FetchError, "no se pudo obtener el catálogo (#{e.class})"
     rescue JSON::ParserError
-      raise InvalidPayloadError, "the catalog is not valid JSON"
+      raise InvalidPayloadError, "el catálogo no es un JSON válido"
     end
 
     def validate_payload!(payload)
       valid = payload.is_a?(Hash) && payload["version"].present? && payload["cripticos"].is_a?(Array)
-      raise InvalidPayloadError, "the catalog has an unexpected structure" unless valid
+      raise InvalidPayloadError, "el catálogo tiene una estructura inesperada" unless valid
     end
 
     def already_synced?(version)
@@ -71,7 +71,13 @@ module Cryptics
 
       ActiveRecord::Base.transaction do
         payload["cripticos"].each do |entry|
-          seen_ids << entry["id"].to_s if entry.is_a?(Hash) && entry["id"].present?
+          entry_id = entry["id"].to_s if entry.is_a?(Hash) && entry["id"].present?
+
+          if entry_id && seen_ids.include?(entry_id)
+            rejections << { "id" => entry_id, "reason" => "el id está repetido en la fuente" }
+            next
+          end
+          seen_ids << entry_id if entry_id
 
           outcome, reason = import_entry(entry, payload["fuente"])
           case outcome
@@ -92,7 +98,7 @@ module Cryptics
 
     def import_entry(entry, source_name)
       unless entry.is_a?(Hash) && entry["id"].present?
-        return [:rejected, "entry must be an object with an id"]
+        return [ :rejected, "la entrada debe ser un objeto con id" ]
       end
 
       cryptic = Cryptic.find_or_initialize_by(external_id: entry["id"].to_s)
@@ -100,10 +106,10 @@ module Cryptics
       was_new = cryptic.new_record?
       was_changed = cryptic.changed?
 
-      return [:rejected, cryptic.errors.full_messages.to_sentence] unless cryptic.save
-      return [:created] if was_new
+      return [ :rejected, cryptic.errors.full_messages.to_sentence ] unless cryptic.save
+      return [ :created ] if was_new
 
-      [was_changed ? :updated : :unchanged]
+      [ was_changed ? :updated : :unchanged ]
     end
 
     def attributes_for(entry, source_name)
@@ -124,7 +130,7 @@ module Cryptics
     end
 
     def deactivate_missing(seen_ids)
-      return 0 if seen_ids.empty? # never wipe the catalog because of an unusable payload
+      return 0 if seen_ids.empty? # nunca vaciar el catálogo por un payload inusable
 
       Cryptic.where(active: true)
              .where.not(external_id: seen_ids)
