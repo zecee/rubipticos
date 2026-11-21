@@ -1,5 +1,6 @@
 class SyncRun < ApplicationRecord
   STATUSES = %w[completed unchanged failed].freeze
+  STATUS_LABELS = { "completed" => "Completada", "unchanged" => "Sin cambios", "failed" => "Con error" }.freeze
 
   belongs_to :user, optional: true
 
@@ -8,4 +9,8 @@ class SyncRun < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   scope :completed, -> { where(status: "completed") }
+
+  def status_label
+    STATUS_LABELS.fetch(status)
+  end
 end
