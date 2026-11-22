@@ -8,5 +8,5 @@ begin
   run.rejections.each { |r| puts "  - #{r['id']}: #{r['reason']}" }
 rescue Cryptics::Sync::Error => e
   warn "No se pudo cargar el catálogo: #{e.message}"
-  warn "Verificá la conexión y corré `bin/rails db:seed` de nuevo."
+  warn "Verificá la conexión e intentalo de nuevo."
 end
