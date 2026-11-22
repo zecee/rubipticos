@@ -1,0 +1,12 @@
+<% content_for :header do %>
+  <header class="site-header">
+    <%= link_to "Rubípticos", "/", class: "brand" %>
+    <span>Administración</span>
+  </header>
+<% end %>
+
+<% content_for :content do %>
+  <%= yield %>
+<% end %>
+
+<%= render template: "layouts/application" %>

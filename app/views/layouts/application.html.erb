@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <title><%= content_for(:title) || "Rubipticos" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -24,6 +24,12 @@
   </head>
 
   <body>
-    <%= yield %>
+    <%= yield :header %>
+    <main>
+      <% flash.each do |type, message| %>
+        <p class="flash <%= type %>" role="<%= type == "alert" ? "alert" : "status" %>"><%= message %></p>
+      <% end %>
+      <%= content_for?(:content) ? yield(:content) : yield %>
+    </main>
   </body>
 </html>
