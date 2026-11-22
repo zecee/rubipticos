@@ -55,6 +55,7 @@ module Cryptics
     def validate_payload!(payload)
       valid = payload.is_a?(Hash) && payload["version"].present? && payload["cripticos"].is_a?(Array)
       raise InvalidPayloadError, "el catálogo tiene una estructura inesperada" unless valid
+      raise InvalidPayloadError, "el catálogo no contiene crípticos" if payload["cripticos"].empty?
     end
 
     # Compara contra la última sincronización exitosa, sin importar la URL:
