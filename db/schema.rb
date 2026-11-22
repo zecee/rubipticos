@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_20_225159) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_000000) do
   create_table "cryptics", force: :cascade do |t|
     t.string "external_id", null: false
     t.text "clue", null: false
@@ -66,4 +66,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_20_225159) do
 
   add_foreign_key "sessions", "users"
   add_foreign_key "sync_runs", "users"
+  create_table "players", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "name_key", null: false
+    t.string "token_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name_key"], name: "index_players_on_name_key", unique: true
+    t.index ["token_digest"], name: "index_players_on_token_digest", unique: true
+  end
 end

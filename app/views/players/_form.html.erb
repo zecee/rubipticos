@@ -1,0 +1,20 @@
+<% if @player.errors.any? %>
+  <div class="errors" role="alert">
+    <p>No pudimos guardar el nombre:</p>
+    <ul>
+      <% @player.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+    <% if @suggested_name %>
+      <p>Podés probar con <strong><%= @suggested_name %></strong>. Escribilo en el campo si querés usarlo.</p>
+    <% end %>
+  </div>
+<% end %>
+
+<%= form_with model: @player, url: player_path do |form| %>
+  <%= form.label :name, "Nombre del jugador" %>
+  <p id="name-help">Entre 3 y 20 caracteres. Quitamos los espacios al principio y al final. Las mayúsculas no distinguen nombres.</p>
+  <%= form.text_field :name, required: true, autocomplete: "nickname", aria: { describedby: "name-help" } %>
+  <%= form.submit @player.persisted? ? "Guardar nombre" : "Crear jugador" %>
+<% end %>

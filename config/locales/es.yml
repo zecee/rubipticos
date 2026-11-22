@@ -1,6 +1,7 @@
 es:
   activerecord:
     models:
+<<<<<<< HEAD
       cryptic: Críptico
       sync_run: Sincronización
     attributes:
@@ -19,3 +20,16 @@ es:
         explanation: Explicación
         author: Autor
         active: Activo
+=======
+      player: Jugador
+    attributes:
+      player:
+        name: Nombre
+        name_key: Nombre
+    errors:
+      messages:
+        blank: no puede estar vacío
+        taken: ya está en uso
+        too_short: debe tener al menos %{count} caracteres
+        too_long: debe tener como máximo %{count} caracteres
+>>>>>>> 3ee3fab (feat: add persistent player identity)

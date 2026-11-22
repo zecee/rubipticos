@@ -1,0 +1,118 @@
+require "test_helper"
+
+class PlayerTest < ActiveSupport::TestCase
+  test "trims exterior whitespace without restricting characters or interior spaces" do
+    player = Player.create!(name: " \tÁna María-猫!\u00a0")
+
+    assert_equal "Ána María-猫!", player.name
+    assert_equal "ána maría-猫!", player.name_key
+  end
+
+  test "requires a name between three and twenty characters after trimming" do
+    [ nil, "   ", " ab ", "a" * 21 ].each do |name|
+      player = Player.new(name: name)
+      assert_not player.valid?, "Expected #{name.inspect} to be invalid"
+      assert player.errors[:name].any?
+    end
+
+    [ "abc", "á" * 20 ].each do |name|
+      assert Player.new(name: name).valid?
+    end
+  end
+
+  test "names are unique regardless of case including accented letters" do
+    Player.create!(name: "ÁLVARO")
+    player = Player.new(name: " álvaro ")
+
+    assert_not player.valid?
+    assert player.errors.of_kind?(:name_key, :taken)
+  end
+
+  test "suggestion is available and fits the limit even with existing suffixes" do
+    name = "Á" * 20
+    Player.create!(name: name)
+    Player.create!(name: "#{'á' * 18}_2")
+    player = Player.new(name: name.downcase)
+    player.valid?
+
+    assert_equal "#{'á' * 18}_3", player.name_suggestion
+    assert Player.new(name: player.name_suggestion).valid?
+    assert_equal name.downcase, player.name
+  end
+
+  test "only a digest is stored and raw tokens authenticate after reload" do
+    player = Player.create!(name: "Pedrito")
+    token = player.identity_token
+
+    assert_match(/\A[A-Za-z0-9_-]{43}\z/, token)
+    assert_equal Digest::SHA256.hexdigest(token), player.token_digest
+    assert_equal player, Player.from_identity_token(token)
+    assert_nil Player.find(player.id).identity_token
+    assert_nil Player.from_identity_token("not-a-token")
+    assert_nil Player.from_identity_token(SecureRandom.urlsafe_base64(32))
+    assert_nil Player.from_identity_token(nil)
+  end
+
+  test "renaming preserves the player and token" do
+    player = Player.create!(name: "Pedrito")
+    token = player.identity_token
+    id = player.id
+
+    player.update!(name: "Pedro")
+
+    assert_equal id, Player.from_identity_token(token).id
+    assert_equal "Pedro", player.reload.name
+  end
+
+  test "database rejects duplicate normalized names even without validation" do
+    Player.create!(name: "Pedrito")
+    duplicate = Player.new(name: "PEDRITO")
+    duplicate.valid?
+
+    assert_raises(ActiveRecord::RecordNotUnique) { duplicate.save!(validate: false) }
+  end
+
+  test "rejects missing or invalid token digests through model validation" do
+    player = Player.create!(name: "Pedrito")
+
+    [ nil, "", "short", "a" * 65 ].each do |digest|
+      assert_not player.update(token_digest: digest)
+      assert player.errors[:token_digest].any?
+    end
+  end
+
+  test "database rejects duplicate token digests" do
+    player = Player.create!(name: "Pedrito")
+    other = Player.create!(name: "María")
+
+    assert_raises(ActiveRecord::RecordNotUnique) { other.update_columns(token_digest: player.token_digest) }
+  end
+
+  test "creation collision after validation becomes a friendly name error" do
+    player = Player.new(name: "PEDRITO")
+    assert player.valid?
+    Player.create!(name: "Pedrito")
+    # Simulate validation having completed before the competing write.
+    player.define_singleton_method(:valid?) { |*| true }
+
+    assert_no_difference "Player.count" do
+      assert_not player.save_with_name_conflict
+    end
+    assert player.errors.of_kind?(:name_key, :taken)
+    assert_equal "PEDRITO_2", player.name_suggestion
+  end
+
+  test "rename collision after validation leaves the original name and identity intact" do
+    player = Player.create!(name: "María")
+    token = player.identity_token
+    player.name = "PEDRITO"
+    assert player.valid?
+    Player.create!(name: "Pedrito")
+    player.define_singleton_method(:valid?) { |*| true }
+
+    assert_not player.save_with_name_conflict
+    assert player.errors.of_kind?(:name_key, :taken)
+    assert_equal "María", player.reload.name
+    assert_equal player, Player.from_identity_token(token)
+  end
+end

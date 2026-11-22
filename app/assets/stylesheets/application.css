@@ -8,3 +8,18 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+:root { font-family: system-ui, sans-serif; color: #252335; background: #faf9fc; }
+body { margin: 0; }
+a { color: #63309a; }
+.site-header { padding: 1.25rem; border-bottom: 1px solid #ddd; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+.brand { font-size: 1.5rem; font-weight: bold; text-decoration: none; }
+nav { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; overflow-wrap: anywhere; }
+main { max-width: 42rem; margin: 2rem auto; padding: 0 1.25rem; overflow-wrap: anywhere; }
+form { display: grid; gap: 1rem; margin: 1.5rem 0; }
+input[type="text"] { min-width: 0; padding: .75rem; font: inherit; border: 1px solid #777; border-radius: .3rem; }
+input[type="submit"], .button { display: inline-block; padding: .8rem 1.1rem; background: #63309a; color: white; border: 0; border-radius: .3rem; font: inherit; cursor: pointer; text-decoration: none; white-space: normal; }
+.flash, .errors { padding: 1rem; border: 1px solid #b6a3ca; border-radius: .3rem; background: #f0e9f8; }
+.errors, .alert { border-color: #ab3535; background: #fff1f1; }
+.confirmation { display: flex; gap: .75rem; align-items: baseline; }
+#name-help { margin: 0; }
