@@ -1,6 +1,15 @@
 <% content_for :header do %>
   <header class="site-header">
     <%= link_to "Rubípticos", "/", class: "brand" %>
+    <nav aria-label="Navegación principal">
+      <% if current_player %>
+        <span>Jugador: <strong><%= current_player.name %></strong></span>
+        <%= link_to "Cambiar nombre", edit_player_path %>
+        <%= link_to "Empezar como otro jugador", new_identity_player_path %>
+      <% else %>
+        <%= link_to "Elegir nombre", new_player_path %>
+      <% end %>
+    </nav>
   </header>
 <% end %>
 

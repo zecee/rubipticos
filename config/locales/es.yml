@@ -1,0 +1,14 @@
+es:
+  activerecord:
+    models:
+      player: Jugador
+    attributes:
+      player:
+        name: Nombre
+        name_key: Nombre
+    errors:
+      messages:
+        blank: no puede estar vacío
+        taken: ya está en uso
+        too_short: debe tener al menos %{count} caracteres
+        too_long: debe tener como máximo %{count} caracteres

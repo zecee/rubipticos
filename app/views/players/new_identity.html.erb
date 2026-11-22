@@ -1,0 +1,11 @@
+<h1>Empezar como otro jugador</h1>
+<p>Vas a perder el acceso a <strong><%= current_player.name %></strong>. No podrás recuperarlo ni volver a ingresar usando su nombre.</p>
+<p>El jugador anterior no se borra: conservará su historial y seguirá contando para la futura tabla de posiciones.</p>
+<%= form_with url: start_over_player_path do |form| %>
+  <div class="confirmation">
+    <%= check_box_tag :confirmation, "1", false, required: true %>
+    <%= label_tag :confirmation, "Entiendo que no podré recuperar al jugador anterior." %>
+  </div>
+  <%= form.submit "Confirmar y elegir otro nombre" %>
+<% end %>
+<%= link_to "Cancelar", root_path %>
