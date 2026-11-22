@@ -1,0 +1,21 @@
+es:
+  activerecord:
+    models:
+      cryptic: Críptico
+      sync_run: Sincronización
+    attributes:
+      cryptic:
+        external_id: ID de la fuente
+        clue: Enunciado
+        answer: Respuesta
+        definitions: Definiciones
+        indicators: Indicadores
+        material: Material
+        puzzle_type: Tipo
+        difficulty: Dificultad
+        source: Fuente
+        source_enumeration: Enumeración
+        hint: Ayuda
+        explanation: Explicación
+        author: Autor
+        active: Activo
