@@ -1,16 +1,13 @@
 Rails.application.routes.draw do
-<<<<<<< HEAD
+  root "pages#home"
+  
   resource :session
   resources :passwords, param: :token
-=======
-  root "pages#home"
-
   resource :player, only: %i[new create edit update] do
     get :new_identity
     post :start_over
   end
 
->>>>>>> 3ee3fab (feat: add persistent player identity)
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
