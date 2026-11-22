@@ -7,6 +7,7 @@ module Cryptics
     class InvalidPayloadError < Error; end
 
     REQUEST_TIMEOUT = 10 # segundos
+    DEFAULT_SOURCE_NAME = "Fuente desconocida"
 
     def initialize(source_url:, user: nil)
       @source_url = source_url.to_s
@@ -56,8 +57,10 @@ module Cryptics
       raise InvalidPayloadError, "el catálogo tiene una estructura inesperada" unless valid
     end
 
+    # Compara contra la última sincronización exitosa, sin importar la URL:
+    # el estado de la base refleja la última fuente que se importó.
     def already_synced?(version)
-      SyncRun.completed.where(source_url: @source_url).order(:id).last&.version == version
+      SyncRun.completed.order(:id).last&.version == version
     end
 
     def record_unchanged(version)
@@ -68,6 +71,7 @@ module Cryptics
       created = updated = 0
       rejections = []
       seen_ids = []
+      source_name = payload["fuente"].presence || DEFAULT_SOURCE_NAME
 
       ActiveRecord::Base.transaction do
         payload["cripticos"].each do |entry|
@@ -79,7 +83,7 @@ module Cryptics
           end
           seen_ids << entry_id if entry_id
 
-          outcome, reason = import_entry(entry, payload["fuente"])
+          outcome, reason = import_entry(entry, source_name)
           case outcome
           when :created then created += 1
           when :updated then updated += 1
@@ -103,6 +107,8 @@ module Cryptics
 
       cryptic = Cryptic.find_or_initialize_by(external_id: entry["id"].to_s)
       cryptic.assign_attributes(attributes_for(entry, source_name))
+      # Solo se reactiva lo que desactivó el sync, no lo que desactive un admin a mano.
+      cryptic.assign_attributes(active: true, deactivated_by_sync: false) if cryptic.deactivated_by_sync?
       was_new = cryptic.new_record?
       was_changed = cryptic.changed?
 
@@ -134,7 +140,7 @@ module Cryptics
 
       Cryptic.where(active: true)
              .where.not(external_id: seen_ids)
-             .update_all(active: false, updated_at: Time.current)
+             .update_all(active: false, deactivated_by_sync: true, updated_at: Time.current)
     end
   end
 end
