@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   root "pages#home"
+  
+  resource :session
+  resources :passwords, param: :token
 
   resource :player, only: %i[new create edit update] do
     get :new_identity

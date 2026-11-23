@@ -1,24 +1,12 @@
-require "json"
+SOURCE_URL = "https://ecorrons.github.io/cryptics-api/v1/cryptics.json"
 
-catalog = JSON.parse(Rails.root.join("db/seeds/cryptics.json").read)
-
-Cryptic.transaction do
-  catalog.fetch("cripticos").each do |entry|
-    cryptic = Cryptic.find_or_initialize_by(external_id: entry.fetch("id"))
-    cryptic.assign_attributes(
-      clue: entry.fetch("enunciado"),
-      source_enumeration: entry.fetch("enumeracion"),
-      answer: entry.fetch("respuesta"),
-      definitions: entry.fetch("definiciones"),
-      indicators: entry.fetch("indicadores"),
-      material: entry.fetch("material"),
-      puzzle_type: entry.fetch("tipo"),
-      difficulty: entry.fetch("dificultad"),
-      hint: entry.fetch("ayuda"),
-      explanation: entry.fetch("explicacion"),
-      author: entry.fetch("autor"),
-      source: catalog.fetch("fuente")
-    )
-    cryptic.save!
-  end
+begin
+  run = Cryptics::Sync.new(source_url: SOURCE_URL).call
+  puts "Catálogo (#{run.status_label}): #{run.created_count} creados, " \
+       "#{run.updated_count} actualizados, #{run.deactivated_count} desactivados, " \
+       "#{run.rejected_count} rechazados."
+  run.rejections.each { |r| puts "  - #{r['id']}: #{r['reason']}" }
+rescue Cryptics::Sync::Error => e
+  warn "No se pudo cargar el catálogo: #{e.message}"
+  warn "Verificá la conexión e intentalo de nuevo."
 end

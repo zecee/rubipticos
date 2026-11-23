@@ -2,10 +2,30 @@ es:
   activerecord:
     models:
       player: Jugador
+      cryptic: Críptico
+      sync_run: Sincronización
+
     attributes:
       player:
         name: Nombre
         name_key: Nombre
+
+      cryptic:
+        external_id: ID de la fuente
+        clue: Enunciado
+        answer: Respuesta
+        definitions: Definiciones
+        indicators: Indicadores
+        material: Material
+        puzzle_type: Tipo
+        difficulty: Dificultad
+        source: Fuente
+        source_enumeration: Enumeración
+        hint: Ayuda
+        explanation: Explicación
+        author: Autor
+        active: Activo
+
     errors:
       messages:
         blank: no puede estar vacío

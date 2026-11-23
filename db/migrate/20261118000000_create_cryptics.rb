@@ -19,6 +19,7 @@ class CreateCryptics < ActiveRecord::Migration[8.1]
       t.string :source, null: false
 
       t.boolean :active, null: false, default: true
+      t.boolean :deactivated_by_sync, null: false, default: false
 
       t.timestamps
     end
