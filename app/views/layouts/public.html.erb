@@ -2,6 +2,7 @@
   <header class="site-header">
     <%= link_to "Rubípticos", "/", class: "brand" %>
     <nav aria-label="Navegación principal">
+      <%= link_to "Jugar", new_game_path %>
       <% if current_player %>
         <span>Jugador: <strong><%= current_player.name %></strong></span>
         <%= link_to "Cambiar nombre", edit_player_path %>

@@ -2,7 +2,7 @@
 <p>Acertijos de palabras en español.</p>
 <% if current_player %>
   <p>Ya estás identificado como <strong><%= current_player.name %></strong> en este navegador.</p>
-  <p>El juego estará disponible próximamente.</p>
+  <%= link_to "Jugar o retomar mi partida", new_game_path, class: "button" %>
 <% else %>
   <p>Elegí un nombre para crear tu jugador, sin email ni contraseña.</p>
   <%= link_to "Crear mi jugador", new_player_path, class: "button" %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_22_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_010000) do
   create_table "cryptics", force: :cascade do |t|
     t.string "external_id", null: false
     t.text "clue", null: false
@@ -25,10 +25,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_000000) do
     t.string "author"
     t.string "source", null: false
     t.boolean "active", default: true, null: false
-    t.boolean "deactivated_by_sync", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deactivated_by_sync", default: false, null: false
     t.index ["external_id"], name: "index_cryptics_on_external_id", unique: true
+  end
+
+  create_table "games", force: :cascade do |t|
+    t.integer "player_id", null: false
+    t.integer "cryptic_id", null: false
+    t.string "status", default: "PREPARED", null: false
+    t.datetime "started_at"
+    t.datetime "solved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cryptic_id"], name: "index_games_on_cryptic_id"
+    t.index ["player_id", "cryptic_id"], name: "index_games_on_player_id_and_cryptic_id", unique: true
+    t.index ["player_id"], name: "index_games_on_pending_player", unique: true, where: "status IN ('PREPARED', 'IN_PROGRESS')"
+    t.index ["player_id"], name: "index_games_on_player_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -75,6 +89,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_000000) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "games", "cryptics"
+  add_foreign_key "games", "players"
   add_foreign_key "sessions", "users"
   add_foreign_key "sync_runs", "users"
 end

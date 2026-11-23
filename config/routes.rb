@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
+  resources :games, only: %i[new create show] do
+    post :start, on: :member
+  end
+
   resource :player, only: %i[new create edit update] do
     get :new_identity
     post :start_over

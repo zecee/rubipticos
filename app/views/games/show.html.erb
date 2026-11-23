@@ -1,0 +1,23 @@
+<% content_for :head do %>
+  <meta name="turbo-cache-control" content="no-cache">
+<% end %>
+
+<% if @game.prepared? %>
+  <h1>Tu partida está preparada</h1>
+  <p>El críptico ya está reservado para vos. El reloj empezará solo cuando presiones Jugar.</p>
+  <%= button_to "Jugar", start_game_path(@game), class: "button" %>
+<% else %>
+  <h1>Partida en curso</h1>
+  <section aria-label="Críptico">
+    <h2><%= @game.cryptic.clue %> <%= @game.cryptic.enumeration %></h2>
+  </section>
+  <p data-controller="game-timer"
+     data-game-timer-started-at-value="<%= @game.started_at.iso8601(3) %>"
+     data-game-timer-server-time-value="<%= @server_time.iso8601(3) %>">
+    Tiempo transcurrido:
+    <time data-game-timer-target="display"><%= @game.elapsed_seconds(at: @server_time) %> s</time>
+  </p>
+  <p>No hay límite de tiempo. Podés volver desde Jugar para retomar esta partida; cerrar la pestaña no detiene el reloj.</p>
+  <p>El envío de respuestas estará disponible en una próxima entrega.</p>
+<% end %>
+<%= link_to "Volver al inicio", root_path %>

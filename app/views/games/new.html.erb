@@ -1,0 +1,10 @@
+<h1>Elegí la dificultad</h1>
+<p>Te asignaremos al azar un críptico que todavía no hayas jugado.</p>
+<% if @error %>
+  <p class="errors" role="alert"><%= @error %></p>
+<% end %>
+<%= form_with url: games_path do |form| %>
+  <%= form.label :difficulty, "Dificultad" %>
+  <%= form.select :difficulty, [["Fácil", "facil"], ["Medio", "medio"], ["Avanzado", "avanzado"]], prompt: "Elegí una dificultad" %>
+  <%= form.submit "Asignar críptico" %>
+<% end %>

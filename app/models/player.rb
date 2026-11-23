@@ -3,6 +3,8 @@ require "digest"
 class Player < ApplicationRecord
   NAME_LENGTH = 3..20
 
+  has_many :games, dependent: :restrict_with_exception
+
   attr_reader :identity_token
 
   normalizes :name, with: ->(name) { name.gsub(/\A\p{Space}+|\p{Space}+\z/, "") }
@@ -27,6 +29,10 @@ class Player < ApplicationRecord
 
     errors.add(:name_key, :taken)
     false
+  end
+
+  def pending_game
+    games.pending.first
   end
 
   def name_suggestion

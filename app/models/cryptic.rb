@@ -1,4 +1,6 @@
 class Cryptic < ApplicationRecord
+  has_many :games, dependent: :restrict_with_exception
+
   PUZZLE_TYPES = %w[
     anagrama oculta charada contenedor inversion supresion homofono
     doble_definicion iniciales finales sustitucion simbolos combinada
@@ -9,6 +11,10 @@ class Cryptic < ApplicationRecord
 
   attr_accessor :source_enumeration
 
+  scope :active, -> { where(active: true) }
+  scope :with_difficulty, ->(difficulty) { where(difficulty: difficulty) }
+  scope :not_played_by, ->(player) { where.not(id: player.games.select(:cryptic_id)) }
+
   validates :external_id, :clue, :answer, :source, presence: true
   validates :external_id, uniqueness: true
   validates :puzzle_type, inclusion: { in: PUZZLE_TYPES }
@@ -17,6 +23,11 @@ class Cryptic < ApplicationRecord
   validate :parts_appear_in_clue
   validate :double_definition_has_two_definitions
   validate :answer_follows_type_rule
+
+  def self.random_available_for(player:, difficulty:)
+    active.with_difficulty(difficulty).not_played_by(player)
+      .order(Arel.sql("RANDOM()")).first
+  end
 
   # Solo letras en minúscula: sin tildes, espacios ni signos. La Ñ se distingue de la N.
   def self.letters(text)

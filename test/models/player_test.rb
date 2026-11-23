@@ -1,6 +1,18 @@
 require "test_helper"
 
 class PlayerTest < ActiveSupport::TestCase
+  test "pending game returns the players prepared or in-progress game" do
+    player = Player.create!(name: "Jugador")
+    other = Player.create!(name: "Otro jugador")
+    other.games.create!(cryptic: cryptics(:easy))
+    assert_nil player.pending_game
+
+    game = player.games.create!(cryptic: cryptics(:easy))
+    assert_equal game, player.pending_game
+    game.start!
+    assert_equal game, player.pending_game
+  end
+
   test "trims exterior whitespace without restricting characters or interior spaces" do
     player = Player.create!(name: " \tÁna María-猫!\u00a0")
 

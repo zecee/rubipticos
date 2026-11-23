@@ -10,6 +10,9 @@ es:
         name: Nombre
         name_key: Nombre
 
+      game:
+        cryptic: Críptico
+
       cryptic:
         external_id: ID de la fuente
         clue: Enunciado
@@ -28,6 +31,7 @@ es:
 
     errors:
       messages:
+        required: debe existir
         blank: no puede estar vacío
         taken: ya está en uso
         too_short: debe tener al menos %{count} caracteres

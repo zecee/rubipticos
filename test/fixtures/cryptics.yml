@@ -1,0 +1,37 @@
+easy:
+  external_id: game-easy
+  clue: CERSETO revuelto da algo desconocido
+  answer: SECRETO
+  definitions: [algo desconocido]
+  indicators: [revuelto]
+  material: [CERSETO]
+  puzzle_type: anagrama
+  difficulty: facil
+  hint: Pista reservada
+  explanation: Explicación reservada
+  source: test
+  active: true
+
+medium:
+  external_id: game-medium
+  clue: Pato rosado esconde un animal de las corridas
+  answer: TORO
+  definitions: [un animal de las corridas]
+  indicators: [esconde]
+  material: [Pato rosado]
+  puzzle_type: oculta
+  difficulty: medio
+  source: test
+  active: true
+
+inactive:
+  external_id: game-inactive
+  clue: Amor loco da una fruta del bosque
+  answer: MORA
+  definitions: [una fruta del bosque]
+  indicators: [loco]
+  material: [Amor]
+  puzzle_type: anagrama
+  difficulty: facil
+  source: test
+  active: false

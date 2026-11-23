@@ -3,6 +3,10 @@ require "test_helper"
 class Cryptics::SyncTest < ActiveSupport::TestCase
   URL = "http://catalogo.test/v1/cryptics.json".freeze
 
+  setup do
+    Cryptic.delete_all
+  end
+
   def container_entry(overrides = {})
     {
       "id" => "cr-013", "enunciado" => "Mi metido en el hogar da una prenda", "enumeracion" => "(6)",
