@@ -28,13 +28,15 @@
           </tbody>
         </table>
       </div>
+
+      <%= will_paginate @cryptics, class: "admin-pagination", inner_window: 1, outer_window: 0 %>
+      <p class="admin-pagination-info"><%= page_entries_info @cryptics, model: Cryptic %></p>
     <% else %>
       <p class="admin-empty">Todavía no hay crípticos. Corré <code>bin/rails db:seed</code> o sincronizá el catálogo.</p>
     <% end %>
 
     <%= render "admin/shared/pending", items: [
       "Filtros por dificultad, tipo, estado y origen.",
-      "Paginación.",
       "Activar y desactivar cada críptico."
     ] %>
   </div>
