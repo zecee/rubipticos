@@ -1,0 +1,111 @@
+/* Backend de administración. Todo va bajo body.admin para no afectar al sitio público.
+   Ojo: application.css define estilos globales para main, nav y form; acá se pisan los que molestan. */
+.admin {
+  --admin-bg: #f5f6f8;
+  --admin-surface: #ffffff;
+  --admin-ink: #15202b;
+  --admin-muted: #5b6876;
+  --admin-line: #d5dbe2;
+  --admin-accent: #1f4fd1;
+  --admin-side: #15202b;
+  --admin-side-ink: #d8e0ea;
+  --admin-side-muted: #8796a6;
+  --admin-side-active: #273647;
+  --admin-mark: #ffd84d;
+  --admin-ok: #1d7a46;
+  --admin-ok-soft: #dff3e7;
+  --admin-bad: #b3261e;
+  --admin-bad-soft: #fde4e2;
+  --admin-sidebar-width: 13.5rem;
+
+  margin: 0;
+  min-height: 100vh;
+  background: var(--admin-bg);
+  color: var(--admin-ink);
+  font-family: system-ui, sans-serif;
+}
+
+.admin a { color: var(--admin-accent); }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* Menú lateral */
+.admin-sidebar {
+  position: fixed; inset: 0 auto 0 0; width: var(--admin-sidebar-width); box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 1rem; padding: 1rem .75rem;
+  background: var(--admin-side); color: var(--admin-side-ink); overflow-y: auto; z-index: 20;
+}
+.admin-sidebar__brand { color: var(--admin-side-ink) !important; font-weight: 800; font-size: 1.15rem; text-decoration: none; padding: 0 .5rem; }
+.admin-nav { display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 1rem; }
+.admin-nav__group { display: flex; flex-direction: column; gap: .15rem; }
+.admin-nav__label { margin: 0; padding: .25rem .6rem; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--admin-side-muted); }
+.admin-nav__link { color: var(--admin-side-ink) !important; text-decoration: none; padding: .45rem .6rem; border-radius: .25rem; }
+.admin-nav__link:hover { background: var(--admin-side-active); }
+.admin-nav__link.is-active { background: var(--admin-side-active); box-shadow: inset 3px 0 0 var(--admin-mark); font-weight: 600; }
+.admin-sidebar__me { margin-top: auto; display: flex; flex-direction: column; gap: .15rem; padding: .75rem .5rem 0; border-top: 1px solid var(--admin-side-active); font-size: .8rem; color: var(--admin-side-muted); overflow-wrap: anywhere; }
+.admin-sidebar__me strong { color: var(--admin-side-ink); }
+.admin-sidebar__me form { margin: .4rem 0 0; display: block; }
+.admin-sidebar__logout { background: none; border: 0; padding: 0; color: var(--admin-side-ink); text-decoration: underline; font: inherit; cursor: pointer; }
+
+/* Barra superior: solo en el celular */
+.admin-topbar { display: none; }
+
+.admin-main { margin: 0 0 0 var(--admin-sidebar-width); padding: 1.5rem 2rem 3rem; max-width: 80rem; overflow-wrap: normal; display: flex; flex-direction: column; gap: 1.25rem; }
+.admin-page-header h1 { margin: 0; font-size: 1.6rem; }
+.admin-page-header p { margin: .25rem 0 0; color: var(--admin-muted); }
+
+.admin-flash { margin: 0; padding: .6rem .9rem; border-left: 3px solid var(--admin-ok); background: var(--admin-ok-soft); }
+.admin-flash--alert { border-color: var(--admin-bad); background: var(--admin-bad-soft); }
+
+.admin-button { display: inline-block; padding: .5rem .9rem; border-radius: .25rem; background: var(--admin-accent); color: #fff !important; text-decoration: none; }
+.admin-muted { color: var(--admin-muted); font-family: ui-monospace, monospace; font-size: .9em; }
+.admin-empty { margin: 0; padding: 1rem; border: 1px dashed var(--admin-line); color: var(--admin-muted); background: var(--admin-surface); }
+
+.admin-pending { padding: .75rem 1rem; border: 1px dashed var(--admin-line); background: var(--admin-surface); font-size: .9rem; }
+.admin-pending h2 { margin: 0 0 .35rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--admin-muted); }
+.admin-pending ul { margin: 0; padding-left: 1.2rem; }
+
+/* Lista + detalle (Turbo Frame) */
+.admin-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem); gap: 1.25rem; align-items: start; }
+.admin-split__list { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.admin-split__detail { display: block; position: sticky; top: 1rem; min-width: 0; }
+
+.admin-table-wrap { overflow-x: auto; background: var(--admin-surface); border: 1px solid var(--admin-line); }
+.admin-table { width: 100%; min-width: 36rem; border-collapse: collapse; font-size: .9rem; }
+.admin-table th, .admin-table td { padding: .5rem .75rem; border-bottom: 1px solid var(--admin-line); text-align: left; vertical-align: top; }
+.admin-table th { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--admin-muted); background: var(--admin-bg); }
+.admin-table td:first-child, .admin-table td:nth-child(n+3) { white-space: nowrap; }
+
+.admin-pill { display: inline-block; white-space: nowrap; padding: .05rem .5rem; border-radius: 999px; font-size: .75rem; font-weight: 600; background: var(--admin-bg); color: var(--admin-muted); border: 1px solid var(--admin-line); }
+.admin-pill--ok { background: var(--admin-ok-soft); color: var(--admin-ok); border-color: transparent; }
+
+.admin-card { display: flex; flex-direction: column; gap: .75rem; padding: 1rem 1.1rem; background: var(--admin-surface); border: 1px solid var(--admin-line); }
+.admin-card__header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.admin-card__header h2 { margin: 0; font-size: 1.1rem; }
+.admin-clue { margin: 0; font-size: 1.1rem; }
+.admin-details { display: grid; grid-template-columns: 7.5rem 1fr; gap: .3rem .75rem; margin: 0; font-size: .9rem; }
+.admin-details dt { color: var(--admin-muted); }
+.admin-details dd { margin: 0; overflow-wrap: anywhere; }
+
+/* Celular y tablet: el menú pasa a ser un cajón */
+@media (max-width: 56rem) {
+  .admin-topbar {
+    position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: .75rem;
+    padding: .6rem 1rem; background: var(--admin-surface); border-bottom: 1px solid var(--admin-line);
+  }
+  .admin-topbar__toggle { font-size: 1.3rem; line-height: 1; padding: .3rem .5rem; background: none; border: 1px solid var(--admin-line); border-radius: .25rem; cursor: pointer; }
+  .admin-topbar__title { font-weight: 600; }
+  .admin-sidebar { transform: translateX(-100%); transition: transform .2s ease; }
+  .admin.sidebar-open .admin-sidebar { transform: none; }
+  .admin-backdrop { position: fixed; inset: 0; background: rgb(10 15 20 / .45); z-index: 15; }
+  .admin-main { margin: 0; padding: 1rem; }
+  .admin-split { grid-template-columns: minmax(0, 1fr); }
+  .admin-split__detail { position: static; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-sidebar { transition: none; }
+}

@@ -1,0 +1,3 @@
+<%= render "admin/shared/page_header", title: "Sin permiso",
+           description: "Tu rol (#{current_user.role_label}) no puede ver esta página." %>
+<p><%= link_to "Ir a Puntajes", admin_scoring_path, class: "admin-button" %></p>

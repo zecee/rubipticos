@@ -13,6 +13,16 @@ Rails.application.routes.draw do
     post :start_over
   end
 
+  namespace :admin do
+    root "home#show"
+    resources :cryptics, only: :index
+    resources :syncs, only: :index
+    resource :scoring, only: :show, controller: "scoring"
+    resources :players, only: :index
+    resource :settings, only: :show
+    resources :users, only: :index
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

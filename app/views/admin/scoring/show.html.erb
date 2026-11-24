@@ -1,0 +1,8 @@
+<%= render "admin/shared/page_header", title: "Puntajes",
+           description: "base = puntos del tipo × multiplicador de la dificultad" %>
+<%= render "admin/shared/pending", items: [
+  "Puntos por tipo de críptico: entero entre 10 y 1000.",
+  "Multiplicador por dificultad: mayor que 0 y hasta 5.",
+  "Aviso de que el cambio solo afecta a las partidas que se resuelvan después.",
+  "Es la única sección que ve el editor de puntajes."
+] %>

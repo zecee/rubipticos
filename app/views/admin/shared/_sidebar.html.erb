@@ -1,0 +1,35 @@
+<aside class="admin-sidebar" id="admin-sidebar" data-sidebar-target="panel">
+  <%= link_to "Rubípticos", admin_root_path, class: "admin-sidebar__brand" %>
+
+  <nav class="admin-nav" aria-label="Menú de administración" data-action="click->sidebar#closeOnLink">
+    <% if current_user.admin? %>
+      <div class="admin-nav__group">
+        <p class="admin-nav__label">Catálogo</p>
+        <%= admin_nav_link "Crípticos", admin_cryptics_path, section: "cryptics" %>
+        <%= admin_nav_link "Sincronización", admin_syncs_path, section: "syncs" %>
+      </div>
+    <% end %>
+
+    <div class="admin-nav__group">
+      <p class="admin-nav__label">Juego</p>
+      <%= admin_nav_link "Puntajes", admin_scoring_path, section: "scoring" %>
+      <% if current_user.admin? %>
+        <%= admin_nav_link "Jugadores", admin_players_path, section: "players" %>
+      <% end %>
+    </div>
+
+    <% if current_user.admin? %>
+      <div class="admin-nav__group">
+        <p class="admin-nav__label">Sistema</p>
+        <%= admin_nav_link "Configuración", admin_settings_path, section: "settings" %>
+        <%= admin_nav_link "Usuarios", admin_users_path, section: "users" %>
+      </div>
+    <% end %>
+  </nav>
+
+  <div class="admin-sidebar__me">
+    <strong><%= current_user.email_address %></strong>
+    <span><%= current_user.role_label %></span>
+    <%= button_to "Cerrar sesión", session_path, method: :delete, class: "admin-sidebar__logout" %>
+  </div>
+</aside>
