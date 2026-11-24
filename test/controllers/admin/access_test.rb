@@ -46,6 +46,9 @@ module Admin
         get public_send(path)
         assert_response :forbidden, "#{path} should be forbidden for a score editor"
       end
+
+      get admin_cryptic_path(cryptics(:easy))
+      assert_response :forbidden
     end
 
     test "menu shows only the sections the role can use" do

@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "home#show"
-    resources :cryptics, only: :index
+    resources :cryptics, only: %i[index show]
     resources :syncs, only: :index
     resource :scoring, only: :show, controller: "scoring"
     resources :players, only: :index
