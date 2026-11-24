@@ -1,5 +1,5 @@
 <h1>Bienvenido a Rubípticos</h1>
-<p>Acertijos de palabras en español.</p>
+<%= simple_format(@welcome_text) %>
 <% if current_player %>
   <p>Ya estás identificado como <strong><%= current_player.name %></strong> en este navegador.</p>
   <%= link_to "Jugar o retomar mi partida", new_game_path, class: "button" %>

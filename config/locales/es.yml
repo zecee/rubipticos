@@ -4,11 +4,16 @@ es:
       player: Jugador
       cryptic: Críptico
       sync_run: Sincronización
+      app_setting: Configuración
 
     attributes:
       player:
         name: Nombre
         name_key: Nombre
+      app_setting:
+        source_url: URL de la fuente
+        welcome_text: Texto de bienvenida
+        leaderboard_reset_at: Fecha de reinicio del ranking
 
       game:
         cryptic: Críptico

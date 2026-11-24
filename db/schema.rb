@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_22_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_222242) do
+  create_table "app_settings", force: :cascade do |t|
+    t.string "source_url", null: false
+    t.text "welcome_text", null: false
+    t.datetime "leaderboard_reset_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.check_constraint "id = 1", name: "app_settings_singleton"
+  end
+
   create_table "cryptics", force: :cascade do |t|
     t.string "external_id", null: false
     t.text "clue", null: false
@@ -86,7 +95,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_22_010000) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "role", default: "score_editor", null: false
+    t.boolean "active", default: true, null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.check_constraint "role IS NOT NULL AND role IN ('admin', 'score_editor')", name: "users_role_allowed"
   end
 
   add_foreign_key "games", "cryptics"
