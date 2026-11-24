@@ -6,6 +6,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "new" do
     get new_session_path
     assert_response :success
+    assert_select "body.admin-auth .admin-auth__card form[action=?]", session_path
   end
 
   test "create with valid credentials" do
@@ -20,6 +21,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to new_session_path
     assert_nil cookies[:session_id]
+
+    follow_redirect!
+    assert_select ".admin-auth__card [role=alert]", text: "Email o contraseña incorrectos."
   end
 
   test "create rejects an inactive user" do

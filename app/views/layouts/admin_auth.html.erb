@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title><%= [ content_for(:title), "Administración · Rubípticos" ].compact.join(" · ") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="admin-auth">
+    <main class="admin-auth__main">
+      <section class="admin-auth__card" aria-labelledby="admin-auth-title">
+        <header class="admin-auth__brand">
+          <svg class="admin-auth__gem" viewBox="0 0 32 32" aria-hidden="true">
+            <polygon points="8,3 24,3 31,12 16,30 1,12" fill="#b3122e"/>
+            <polygon points="8,3 24,3 20,12 12,12" fill="#e2405a"/>
+            <polygon points="1,12 12,12 16,30" fill="#8a0d23"/>
+            <polygon points="31,12 20,12 16,30" fill="#5e0716"/>
+            <polygon points="12,12 20,12 16,30" fill="#c8213e"/>
+          </svg>
+          <div>
+            <h1 id="admin-auth-title">Rubípticos</h1>
+            <p>Panel de administración</p>
+          </div>
+        </header>
+
+        <% flash.each do |type, message| %>
+          <p class="flash <%= type %> admin-auth__flash admin-auth__flash--<%= type %>" role="<%= type == "alert" ? "alert" : "status" %>"><%= message %></p>
+        <% end %>
+
+        <%= yield %>
+      </section>
+    </main>
+  </body>
+</html>
