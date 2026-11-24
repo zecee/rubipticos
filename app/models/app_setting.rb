@@ -1,6 +1,6 @@
 class AppSetting < ApplicationRecord
   DEFAULT_SOURCE_URL = "https://ecorrons.github.io/cryptics-api/v1/cryptics.json".freeze
-  DEFAULT_WELCOME_TEXT = "¡Bienvenido a Rubípticos! Resolvé crípticos, sumá puntos y mantené tu racha.".freeze
+  DEFAULT_WELCOME_TEXT = "Resolvé crípticos, sumá puntos y mantené tu racha.".freeze
 
   attribute :source_url, :string, default: DEFAULT_SOURCE_URL
   attribute :welcome_text, :string, default: DEFAULT_WELCOME_TEXT
