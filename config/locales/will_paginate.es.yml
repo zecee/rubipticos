@@ -26,3 +26,7 @@ es:
         zero: crípticos
         one: críptico
         other: crípticos
+      sync_run:
+        zero: sincronizaciones
+        one: sincronización
+        other: sincronizaciones
