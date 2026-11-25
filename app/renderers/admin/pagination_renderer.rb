@@ -1,3 +1,5 @@
+require "will_paginate/view_helpers/action_view"
+
 module Admin
   # Paginación del admin: primera, anterior, una ventana de páginas, siguiente y última.
   # Anterior y siguiente están siempre (deshabilitadas en los bordes); primera y última
