@@ -1,7 +1,61 @@
 <%= render "admin/shared/page_header", title: "Sincronización",
            description: "Trae el catálogo desde la fuente configurada y muestra cómo resultó." %>
-<%= render "admin/shared/pending", items: [
-  "Botón «Sincronizar ahora» que llama a Cryptics::Sync con el usuario actual.",
-  "Informe de la última sincronización: creados, actualizados, desactivados y rechazados (con id y motivo).",
-  "Historial: fecha, admin, versión y cantidades de cada SyncRun."
-] %>
+
+<section class="admin-card" aria-labelledby="sync-source-title">
+  <header class="admin-card__header">
+    <h2 id="sync-source-title">Fuente del catálogo</h2>
+    <%= button_to "Sincronizar ahora", admin_syncs_path, class: "admin-button",
+                  data: { turbo_submits_with: "Sincronizando…" } %>
+  </header>
+  <dl class="admin-details">
+    <dt>URL</dt><dd><%= @source_url %></dd>
+    <dt>Versión vigente</dt><dd><%= @current_version.presence || "Todavía no se sincronizó" %></dd>
+    <dt>Catálogo</dt>
+    <dd><%= @total_cryptics %> crípticos: <%= @active_cryptics %> activos y <%= @total_cryptics - @active_cryptics %> inactivos</dd>
+  </dl>
+</section>
+
+<% if @latest_run %>
+  <%= render "admin/syncs/report", run: @latest_run %>
+<% else %>
+  <p class="admin-empty">Todavía no hubo sincronizaciones. Usá «Sincronizar ahora» para traer el catálogo.</p>
+<% end %>
+
+<% if @runs.any? %>
+  <section aria-labelledby="sync-history-title" class="admin-split__list">
+    <h2 id="sync-history-title">Historial</h2>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Realizada por</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Versión</th>
+            <th scope="col">Creados</th>
+            <th scope="col">Actualizados</th>
+            <th scope="col">Desactivados</th>
+            <th scope="col">Rechazados</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @runs.each do |run| %>
+            <tr id="<%= dom_id(run) %>">
+              <td><%= sync_time(run) %></td>
+              <td><%= sync_actor(run) %></td>
+              <td><%= sync_status_pill(run) %></td>
+              <td><%= run.version.presence || "—" %></td>
+              <td><%= run.created_count %></td>
+              <td><%= run.updated_count %></td>
+              <td><%= run.deactivated_count %></td>
+              <td><%= run.rejected_count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= will_paginate @runs, class: "admin-pagination", inner_window: 1, outer_window: 0 %>
+    <p class="admin-pagination-info"><%= page_entries_info @runs, model: SyncRun %></p>
+  </section>
+<% end %>
