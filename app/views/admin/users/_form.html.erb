@@ -1,0 +1,50 @@
+<%# locals: (user:) -%>
+<% if user.errors.any? %>
+  <div class="admin-flash admin-flash--alert" role="alert">
+    <p>No pudimos guardar el usuario:</p>
+    <ul>
+      <% user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: [ :admin, user ], class: "admin-form" do |form| %>
+  <div class="admin-field">
+    <%= form.label :email_address, "Email" %>
+    <%= form.email_field :email_address, required: true, autocomplete: "off" %>
+  </div>
+
+  <div class="admin-field">
+    <%= form.label :password, "Contraseña" %>
+    <%= form.password_field :password, required: user.new_record?, autocomplete: "new-password",
+                            minlength: User::PASSWORD_MIN_LENGTH, aria: { describedby: "password-help" } %>
+    <p id="password-help" class="admin-field__hint">
+      Al menos <%= User::PASSWORD_MIN_LENGTH %> caracteres.
+      <% if user.persisted? %>Dejala en blanco para mantener la actual.<% end %>
+    </p>
+  </div>
+
+  <div class="admin-field">
+    <%= form.label :password_confirmation, "Repetir contraseña" %>
+    <%= form.password_field :password_confirmation, required: user.new_record?, autocomplete: "new-password" %>
+  </div>
+
+  <div class="admin-field">
+    <%= form.label :role, "Rol" %>
+    <% if user == current_user %>
+      <p class="admin-field__hint">
+        <strong><%= user.role_label %></strong>. No podés cambiar tu propio rol.
+      </p>
+    <% else %>
+      <%= form.select :role, User::ROLE_LABELS.invert %>
+    <% end %>
+  </div>
+
+  <div class="admin-form__actions">
+    <%= form.button user.new_record? ? "Crear usuario" : "Guardar cambios", class: "admin-button",
+                    data: { turbo_submits_with: "Guardando…" } %>
+    <%= link_to "Cancelar", admin_users_path %>
+  </div>
+<% end %>

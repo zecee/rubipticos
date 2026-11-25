@@ -19,4 +19,46 @@ class UserTest < ActiveSupport::TestCase
     assert users(:two).score_editor?
     assert_not users(:two).admin?
   end
+
+  test "requires a well formed and unique email" do
+    assert_not User.new(email_address: "no-es-un-email", password: "password123").valid?
+
+    duplicate = User.new(email_address: users(:one).email_address.upcase, password: "password123")
+    assert_not duplicate.valid?
+    assert_includes duplicate.errors[:email_address], "ya está en uso"
+  end
+
+  test "requires a password of at least eight characters" do
+    user = User.new(email_address: "new@example.com", password: "short")
+
+    assert_not user.valid?
+    assert user.errors[:password].any?
+  end
+
+  test "keeps the current password when none is given" do
+    user = users(:two)
+
+    assert user.update(email_address: "renamed@example.com")
+    assert user.reload.authenticate("password")
+  end
+
+  test "cannot deactivate the last active admin" do
+    admin = users(:one)
+
+    assert_not admin.update(active: false)
+    assert_includes admin.errors[:base], "Tiene que quedar al menos un administrador activo."
+  end
+
+  test "cannot demote the last active admin" do
+    admin = users(:one)
+
+    assert_not admin.update(role: "score_editor")
+    assert admin.reload.admin?
+  end
+
+  test "can deactivate an admin when another active admin remains" do
+    User.create!(email_address: "other-admin@example.com", password: "password123", role: "admin")
+
+    assert users(:one).update(active: false)
+  end
 end

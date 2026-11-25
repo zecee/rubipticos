@@ -5,8 +5,15 @@ es:
       cryptic: Críptico
       sync_run: Sincronización
       app_setting: Configuración
+      user: Usuario
 
     attributes:
+      user:
+        email_address: Email
+        password: Contraseña
+        password_confirmation: Confirmación de contraseña
+        role: Rol
+        active: Activo
       player:
         name: Nombre
         name_key: Nombre

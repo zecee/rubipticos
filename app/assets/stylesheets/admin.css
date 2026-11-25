@@ -95,13 +95,17 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin .admin-form { display: flex; flex-direction: column; gap: 1rem; margin: 0; }
 .admin-field { display: flex; flex-direction: column; gap: .3rem; font-size: .9rem; }
 .admin-field label { font-weight: 600; }
-.admin-field input, .admin-field textarea {
+.admin-field input, .admin-field textarea, .admin-field select {
   padding: .6rem .75rem; font: inherit; font-size: 1rem; box-sizing: border-box; width: 100%;
   border: 1px solid var(--admin-line); border-radius: .25rem; background: var(--admin-surface); color: var(--admin-ink);
 }
 .admin-field textarea { resize: vertical; }
-.admin-field input:focus-visible, .admin-field textarea:focus-visible { outline: 3px solid rgb(31 79 209 / .3); border-color: var(--admin-accent); }
+.admin-field input:focus-visible, .admin-field textarea:focus-visible, .admin-field select:focus-visible { outline: 3px solid rgb(31 79 209 / .3); border-color: var(--admin-accent); }
 .admin-field__hint { margin: 0; font-size: .85rem; color: var(--admin-muted); }
+.admin-form__actions { display: flex; align-items: center; gap: 1rem; }
+.admin-card--narrow { max-width: 32rem; }
+.admin-row-actions { display: flex; align-items: center; gap: .75rem; }
+.admin-link-button { background: none; border: 0; padding: 0; font: inherit; color: var(--admin-accent); text-decoration: underline; cursor: pointer; }
 .admin-flash ul { margin: .3rem 0 0; padding-left: 1.2rem; }
 .admin-flash p { margin: 0; }
 
