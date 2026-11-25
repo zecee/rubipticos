@@ -16,4 +16,16 @@ class CrypticTest < ActiveSupport::TestCase
     cryptics(:medium).update!(active: false)
     assert_nil Cryptic.random_available_for(player: player, difficulty: "medio")
   end
+
+  test "every puzzle type and difficulty has a Spanish label" do
+    assert_equal Cryptic::PUZZLE_TYPES.sort, Cryptic::PUZZLE_TYPE_LABELS.keys.sort
+    assert_equal Cryptic::DIFFICULTIES.sort, Cryptic::DIFFICULTY_LABELS.keys.sort
+  end
+
+  test "labels follow the puzzle type and difficulty" do
+    cryptic = Cryptic.new(puzzle_type: "doble_definicion", difficulty: "facil")
+
+    assert_equal "Doble definición", cryptic.puzzle_type_label
+    assert_equal "Fácil", cryptic.difficulty_label
+  end
 end

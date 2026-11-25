@@ -6,6 +6,14 @@ class Cryptic < ApplicationRecord
     doble_definicion iniciales finales sustitucion simbolos combinada
   ].freeze
   DIFFICULTIES = %w[facil medio avanzado].freeze
+  PUZZLE_TYPE_LABELS = {
+    "anagrama" => "Anagrama", "oculta" => "Oculta", "charada" => "Charada",
+    "contenedor" => "Contenedor", "inversion" => "Inversión", "supresion" => "Supresión",
+    "homofono" => "Homófono", "doble_definicion" => "Doble definición", "iniciales" => "Iniciales",
+    "finales" => "Finales", "sustitucion" => "Sustitución", "simbolos" => "Símbolos",
+    "combinada" => "Combinada"
+  }.freeze
+  DIFFICULTY_LABELS = { "facil" => "Fácil", "medio" => "Medio", "avanzado" => "Avanzado" }.freeze
   MATERIAL_RULE_TYPES = %w[oculta anagrama iniciales finales].freeze
   CONNECTORS = %w[y e o u de del la el los las un una].freeze
 
@@ -37,6 +45,14 @@ class Cryptic < ApplicationRecord
         .gsub(/\p{Mn}/, "")
         .tr("\u0001", "ñ")
         .gsub(/[^\p{L}]/, "")
+  end
+
+  def puzzle_type_label
+    PUZZLE_TYPE_LABELS.fetch(puzzle_type)
+  end
+
+  def difficulty_label
+    DIFFICULTY_LABELS.fetch(difficulty)
   end
 
   def enumeration
