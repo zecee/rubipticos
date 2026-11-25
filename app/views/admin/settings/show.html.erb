@@ -1,6 +1,42 @@
 <%= render "admin/shared/page_header", title: "Configuración",
            description: "Ajustes generales del sitio." %>
-<%= render "admin/shared/pending", items: [
-  "URL de la fuente de crípticos (la API de la cátedra, un fork propio o un servidor local).",
-  "Texto de bienvenida del sitio público."
-] %>
+
+<section class="admin-card" aria-labelledby="settings-title">
+  <header class="admin-card__header">
+    <h2 id="settings-title">Sitio y catálogo</h2>
+  </header>
+
+  <% if @setting.errors.any? %>
+    <div class="admin-flash admin-flash--alert" role="alert">
+      <p>No pudimos guardar la configuración:</p>
+      <ul>
+        <% @setting.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @setting, url: admin_settings_path, method: :patch, class: "admin-form" do |form| %>
+    <div class="admin-field">
+      <%= form.label :source_url, "URL de la fuente de crípticos" %>
+      <%= form.url_field :source_url, required: true, aria: { describedby: "source-url-help" } %>
+      <p id="source-url-help" class="admin-field__hint">
+        Se usa en «Sincronizar ahora», en la pestaña de Sincronización.
+      </p>
+    </div>
+
+    <div class="admin-field">
+      <%= form.label :welcome_text, "Texto de bienvenida" %>
+      <%= form.text_area :welcome_text, rows: 4, required: true, maxlength: AppSetting::WELCOME_TEXT_MAX_LENGTH,
+                         aria: { describedby: "welcome-text-help" } %>
+      <p id="welcome-text-help" class="admin-field__hint">
+        Se muestra en la página de inicio del sitio público. Hasta <%= AppSetting::WELCOME_TEXT_MAX_LENGTH %> caracteres.
+      </p>
+    </div>
+
+    <div>
+      <%= form.button "Guardar cambios", class: "admin-button", data: { turbo_submits_with: "Guardando…" } %>
+    </div>
+  <% end %>
+</section>

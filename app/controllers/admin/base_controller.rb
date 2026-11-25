@@ -32,5 +32,11 @@ module Admin
 
       render "admin/shared/forbidden", status: :forbidden
     end
+
+    # will_paginate falla con páginas que no son números positivos; en ese caso, la primera.
+    def current_page
+      page = params[:page].to_s
+      page.match?(/\A[1-9]\d*\z/) ? page.to_i : 1
+    end
   end
 end

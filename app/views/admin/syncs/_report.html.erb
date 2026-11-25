@@ -1,0 +1,48 @@
+<%# locals: (run:) -%>
+<article class="admin-card" aria-labelledby="sync-report-title">
+  <header class="admin-card__header">
+    <h2 id="sync-report-title">Última sincronización</h2>
+    <%= sync_status_pill(run) %>
+  </header>
+
+  <dl class="admin-details">
+    <dt>Fecha</dt><dd><%= sync_time(run) %></dd>
+    <dt>Realizada por</dt><dd><%= sync_actor(run) %></dd>
+    <dt>Fuente</dt><dd><%= run.source_url %></dd>
+    <dt>Versión</dt><dd><%= run.version.presence || "—" %></dd>
+  </dl>
+
+  <% if run.status == "failed" %>
+    <p class="admin-flash admin-flash--alert" role="alert">
+      No se tocó el catálogo. Motivo: <%= run.error_message %>
+    </p>
+  <% elsif run.status == "unchanged" %>
+    <p class="admin-empty">Sin cambios: la versión de la fuente coincide con la de la última sincronización exitosa.</p>
+  <% else %>
+    <dl class="admin-details">
+      <dt>Creados</dt><dd><%= run.created_count %></dd>
+      <dt>Actualizados</dt><dd><%= run.updated_count %></dd>
+      <dt>Desactivados</dt><dd><%= run.deactivated_count %></dd>
+      <dt>Rechazados</dt><dd><%= run.rejected_count %></dd>
+    </dl>
+
+    <% if run.rejections.any? %>
+      <h3>Crípticos rechazados</h3>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th scope="col">Id</th><th scope="col">Motivo</th></tr>
+          </thead>
+          <tbody>
+            <% run.rejections.each do |rejection| %>
+              <tr>
+                <td><%= rejection["id"].presence || "(sin id)" %></td>
+                <td><%= rejection["reason"] %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  <% end %>
+</article>

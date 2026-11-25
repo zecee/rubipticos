@@ -16,10 +16,10 @@ Rails.application.routes.draw do
   namespace :admin do
     root "home#show"
     resources :cryptics, only: %i[index show]
-    resources :syncs, only: :index
+    resources :syncs, only: %i[index create]
     resource :scoring, only: :show, controller: "scoring"
     resources :players, only: :index
-    resource :settings, only: :show
+    resource :settings, only: %i[show update]
     resources :users, only: :index
   end
 

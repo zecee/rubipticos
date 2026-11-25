@@ -13,4 +13,8 @@ class SyncRun < ApplicationRecord
   def status_label
     STATUS_LABELS.fetch(status)
   end
+
+  def self.last_completed
+    completed.order(:id).last
+  end
 end
