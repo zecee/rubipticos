@@ -46,4 +46,12 @@ class CrypticTest < ActiveSupport::TestCase
     assert_equal [ cryptics(:easy) ], Cryptic.filter_by(difficulty: "facil", status: "active").to_a
     assert_equal Cryptic.count, Cryptic.filter_by(status: "x").count
   end
+
+  test "filter_by narrows by source and sources lists each origin once" do
+    cryptics(:medium).update_columns(source: "propia")
+
+    assert_equal [ cryptics(:medium) ], Cryptic.filter_by(source: "propia").to_a
+    assert_equal Cryptic.count, Cryptic.filter_by(source: "").count
+    assert_equal %w[propia test], Cryptic.sources
+  end
 end

@@ -130,6 +130,17 @@ module Admin
       assert_select "select[name=status] option[selected][value=inactive]"
     end
 
+    test "index filters by source" do
+      cryptics(:medium).update_columns(source: "propia")
+
+      get admin_cryptics_path(source: "propia")
+
+      assert_select ".admin-table tbody tr", count: 1
+      assert_select "tr[id=?]", dom_id(cryptics(:medium))
+      assert_select "select[name=source] option[selected][value=propia]"
+      assert_select "select[name=source] option[value=test]"
+    end
+
     private
 
     def create_extra_cryptics(count)
