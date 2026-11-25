@@ -127,4 +127,79 @@ class PlayerTest < ActiveSupport::TestCase
     assert_equal "María", player.reload.name
     assert_equal player, Player.from_identity_token(token)
   end
+
+  test "block hides the player from the unblocked scope until unblocked" do
+    player = Player.create!(name: "Ofensivo")
+
+    player.block!
+
+    assert player.blocked?
+    assert_includes Player.blocked, player
+    assert_not_includes Player.unblocked, player
+
+    player.unblock!
+
+    assert_not player.blocked?
+    assert_includes Player.unblocked, player
+  end
+
+  test "blocking twice keeps the original block time" do
+    player = Player.create!(name: "Ofensivo")
+    player.block!
+    blocked_at = player.blocked_at
+
+    travel 1.hour do
+      player.block!
+    end
+
+    assert_equal blocked_at, player.reload.blocked_at
+  end
+
+  test "current streak counts consecutive solved days ending today" do
+    player = player_with_solved_days(0, 1, 2, 4)
+
+    assert_equal 3, player.current_streak(today: today)
+  end
+
+  test "current streak stays alive when the last solve was yesterday" do
+    player = player_with_solved_days(1, 2)
+
+    assert_equal 2, player.current_streak(today: today)
+  end
+
+  test "current streak is lost after a day without solving" do
+    player = player_with_solved_days(2, 3)
+
+    assert_equal 0, player.current_streak(today: today)
+  end
+
+  test "several solves on the same day count once" do
+    player = player_with_solved_days(0, 0, 1)
+
+    assert_equal 2, player.current_streak(today: today)
+  end
+
+  test "unsolved games do not count for the streak" do
+    player = Player.create!(name: "Jugador")
+    player.games.create!(cryptic: cryptics(:easy)).start!
+
+    assert_equal 0, player.current_streak(today: today)
+  end
+
+  private
+
+  def today
+    Date.new(2026, 11, 25)
+  end
+
+  # Resolver partidas todavía no existe: se marca solved_at directo en la base.
+  def player_with_solved_days(*days_ago)
+    player = Player.create!(name: "Racha")
+    days_ago.each_with_index do |days, index|
+      cryptic = cryptics(:easy).dup.tap { |copy| copy.update!(external_id: "streak-#{index}") }
+      game = player.games.create!(cryptic: cryptic)
+      game.update_columns(status: "SOLVED", solved_at: (today - days).in_time_zone.change(hour: 12))
+    end
+    player
+  end
 end

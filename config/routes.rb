@@ -18,7 +18,13 @@ Rails.application.routes.draw do
     resources :cryptics, only: %i[index show update]
     resources :syncs, only: %i[index create]
     resource :scoring, only: :show, controller: "scoring"
-    resources :players, only: :index
+    resources :players, only: :index do
+      member do
+        patch :block
+        patch :unblock
+      end
+      post :reset_leaderboard, on: :collection
+    end
     resource :settings, only: %i[show update]
     resources :users, only: :index
   end
