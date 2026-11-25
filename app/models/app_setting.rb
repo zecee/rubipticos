@@ -1,4 +1,5 @@
 class AppSetting < ApplicationRecord
+  WELCOME_TEXT_MAX_LENGTH = 500
   DEFAULT_SOURCE_URL = "https://ecorrons.github.io/cryptics-api/v1/cryptics.json".freeze
   DEFAULT_WELCOME_TEXT = "Resolvé crípticos, sumá puntos y mantené tu racha.".freeze
 
@@ -7,6 +8,9 @@ class AppSetting < ApplicationRecord
 
   validates :source_url, :welcome_text, presence: true
   validate :source_url_is_http
+  validates :welcome_text, length: { maximum: WELCOME_TEXT_MAX_LENGTH }
+
+  normalizes :source_url, :welcome_text, with: ->(value) { value.strip }
 
   # Única fila de configuración.
   def self.instance
