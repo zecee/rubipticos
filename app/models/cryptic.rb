@@ -24,9 +24,10 @@ class Cryptic < ApplicationRecord
   scope :not_played_by, ->(player) { where.not(id: player.games.select(:cryptic_id)) }
 
   # Filtros del listado del backend. Un valor vacío o desconocido no filtra.
-  def self.filter_by(difficulty: nil)
+  def self.filter_by(difficulty: nil, puzzle_type: nil)
     scope = all
     scope = scope.where(difficulty: difficulty) if DIFFICULTIES.include?(difficulty)
+    scope = scope.where(puzzle_type: puzzle_type) if PUZZLE_TYPES.include?(puzzle_type)
     scope
   end
 

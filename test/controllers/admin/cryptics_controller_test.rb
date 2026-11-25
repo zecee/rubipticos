@@ -114,6 +114,14 @@ module Admin
       assert_select ".admin-empty", text: /Ningún críptico coincide/
     end
 
+    test "index filters by puzzle type" do
+      get admin_cryptics_path(puzzle_type: "oculta")
+
+      assert_select ".admin-table tbody tr", count: 1
+      assert_select "tr[id=?]", dom_id(cryptics(:medium))
+      assert_select "select[name=puzzle_type] option[selected][value=oculta]"
+    end
+
     private
 
     def create_extra_cryptics(count)

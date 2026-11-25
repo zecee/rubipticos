@@ -1,7 +1,7 @@
 module Admin
   class CrypticsController < BaseController
     PER_PAGE = 10
-    FILTERS = %i[difficulty].freeze
+    FILTERS = %i[difficulty puzzle_type].freeze
 
     def index
       @filters = params.permit(*FILTERS).to_h.symbolize_keys

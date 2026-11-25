@@ -34,4 +34,10 @@ class CrypticTest < ActiveSupport::TestCase
     assert_equal Cryptic.count, Cryptic.filter_by(difficulty: "").count
     assert_equal Cryptic.count, Cryptic.filter_by(difficulty: "imposible").count
   end
+
+  test "filter_by narrows by puzzle type and combines filters" do
+    assert_equal [ cryptics(:medium) ], Cryptic.filter_by(puzzle_type: "oculta").to_a
+    assert_empty Cryptic.filter_by(puzzle_type: "oculta", difficulty: "facil")
+    assert_equal Cryptic.count, Cryptic.filter_by(puzzle_type: "otro").count
+  end
 end

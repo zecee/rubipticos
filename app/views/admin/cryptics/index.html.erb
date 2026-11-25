@@ -8,6 +8,11 @@
     <%= form.select :difficulty, cryptic_filter_options(Cryptic::DIFFICULTY_LABELS, @filters[:difficulty]),
                     include_blank: "Todas" %>
   </div>
+  <div class="admin-field">
+    <%= form.label :puzzle_type, "Tipo" %>
+    <%= form.select :puzzle_type, cryptic_filter_options(Cryptic::PUZZLE_TYPE_LABELS, @filters[:puzzle_type]),
+                    include_blank: "Todos" %>
+  </div>
   <div class="admin-filters__actions">
     <%= form.button "Filtrar", name: nil, class: "admin-button" %>
     <% if @filters.compact_blank.any? %>
@@ -52,7 +57,7 @@
     <% end %>
 
     <%= render "admin/shared/pending", items: [
-      "Filtros por tipo, estado y origen.",
+      "Filtros por estado y origen.",
       "Activar y desactivar cada críptico."
     ] %>
   </div>
