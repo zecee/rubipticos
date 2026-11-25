@@ -23,6 +23,13 @@ class Cryptic < ApplicationRecord
   scope :with_difficulty, ->(difficulty) { where(difficulty: difficulty) }
   scope :not_played_by, ->(player) { where.not(id: player.games.select(:cryptic_id)) }
 
+  # Filtros del listado del backend. Un valor vacío o desconocido no filtra.
+  def self.filter_by(difficulty: nil)
+    scope = all
+    scope = scope.where(difficulty: difficulty) if DIFFICULTIES.include?(difficulty)
+    scope
+  end
+
   validates :external_id, :clue, :answer, :source, presence: true
   validates :external_id, uniqueness: true
   validates :puzzle_type, inclusion: { in: PUZZLE_TYPES }

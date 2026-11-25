@@ -28,4 +28,10 @@ class CrypticTest < ActiveSupport::TestCase
     assert_equal "Doble definición", cryptic.puzzle_type_label
     assert_equal "Fácil", cryptic.difficulty_label
   end
+
+  test "filter_by narrows by difficulty and ignores blank or unknown values" do
+    assert_equal [ cryptics(:easy), cryptics(:inactive) ].sort, Cryptic.filter_by(difficulty: "facil").sort
+    assert_equal Cryptic.count, Cryptic.filter_by(difficulty: "").count
+    assert_equal Cryptic.count, Cryptic.filter_by(difficulty: "imposible").count
+  end
 end

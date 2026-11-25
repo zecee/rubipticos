@@ -91,6 +91,29 @@ module Admin
       assert_select ".admin-table tbody tr", count: Cryptic.count
     end
 
+    test "index filters by difficulty" do
+      get admin_cryptics_path(difficulty: "medio")
+
+      assert_select ".admin-table tbody tr", count: 1
+      assert_select "tr[id=?]", dom_id(cryptics(:medium))
+      assert_select "select[name=difficulty] option[selected][value=medio]"
+    end
+
+    test "pagination keeps the filters" do
+      create_extra_cryptics(Admin::CrypticsController::PER_PAGE)
+
+      get admin_cryptics_path(difficulty: "facil")
+
+      assert_select ".admin-pagination a[href=?]", admin_cryptics_path(difficulty: "facil", page: 2)
+    end
+
+    test "index says when no cryptic matches the filters" do
+      get admin_cryptics_path(difficulty: "avanzado")
+
+      assert_select ".admin-table", count: 0
+      assert_select ".admin-empty", text: /Ningún críptico coincide/
+    end
+
     private
 
     def create_extra_cryptics(count)

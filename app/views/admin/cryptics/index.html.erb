@@ -1,6 +1,21 @@
 <%= render "admin/shared/page_header", title: "Crípticos",
            description: "Catálogo sincronizado desde la fuente. Para sumar o cambiar crípticos, sincronizá." %>
 
+<%= form_with url: admin_cryptics_path, method: :get, class: "admin-filters", role: "search",
+              aria: { label: "Filtrar crípticos" } do |form| %>
+  <div class="admin-field">
+    <%= form.label :difficulty, "Dificultad" %>
+    <%= form.select :difficulty, cryptic_filter_options(Cryptic::DIFFICULTY_LABELS, @filters[:difficulty]),
+                    include_blank: "Todas" %>
+  </div>
+  <div class="admin-filters__actions">
+    <%= form.button "Filtrar", name: nil, class: "admin-button" %>
+    <% if @filters.compact_blank.any? %>
+      <%= link_to "Limpiar", admin_cryptics_path %>
+    <% end %>
+  </div>
+<% end %>
+
 <div class="admin-split">
   <div class="admin-split__list">
     <% if @cryptics.any? %>
@@ -30,12 +45,14 @@
       </div>
 
       <%= will_paginate @cryptics, class: "admin-pagination", inner_window: 2, renderer: Admin::PaginationRenderer %>
+    <% elsif @filters.compact_blank.any? %>
+      <p class="admin-empty">Ningún críptico coincide con los filtros. <%= link_to "Ver todos", admin_cryptics_path %>.</p>
     <% else %>
       <p class="admin-empty">Todavía no hay crípticos. Corré <code>bin/rails db:seed</code> o sincronizá el catálogo.</p>
     <% end %>
 
     <%= render "admin/shared/pending", items: [
-      "Filtros por dificultad, tipo, estado y origen.",
+      "Filtros por tipo, estado y origen.",
       "Activar y desactivar cada críptico."
     ] %>
   </div>
