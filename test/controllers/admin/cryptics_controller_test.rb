@@ -141,6 +141,41 @@ module Admin
       assert_select "select[name=source] option[value=test]"
     end
 
+    test "admin deactivates and reactivates a cryptic with turbo streams" do
+      cryptic = cryptics(:easy)
+
+      patch admin_cryptic_path(cryptic), params: { cryptic: { active: "false" } }, as: :turbo_stream
+
+      assert_response :success
+      assert_not cryptic.reload.active?
+      assert_select "turbo-stream[action=update][target=cryptic_detail]"
+      assert_select "turbo-stream[action=update][target=?]", dom_id(cryptic, :status)
+
+      patch admin_cryptic_path(cryptic), params: { cryptic: { active: "true" } }
+
+      assert_redirected_to admin_cryptic_path(cryptic)
+      assert_predicate cryptic.reload, :active?
+    end
+
+    test "update only changes the activation" do
+      cryptic = cryptics(:easy)
+
+      patch admin_cryptic_path(cryptic), params: { cryptic: { active: "false", answer: "OTRA" } }
+
+      assert_equal "SECRETO", cryptic.reload.answer
+      assert_not cryptic.active?
+    end
+
+    test "score editor cannot change a cryptic" do
+      sign_in_as users(:two)
+      cryptic = cryptics(:easy)
+
+      patch admin_cryptic_path(cryptic), params: { cryptic: { active: "false" } }
+
+      assert_response :forbidden
+      assert_predicate cryptic.reload, :active?
+    end
+
     private
 
     def create_extra_cryptics(count)

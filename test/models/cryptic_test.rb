@@ -54,4 +54,17 @@ class CrypticTest < ActiveSupport::TestCase
     assert_equal Cryptic.count, Cryptic.filter_by(source: "").count
     assert_equal %w[propia test], Cryptic.sources
   end
+
+  test "an admin change of activation stops the sync from reactivating it" do
+    cryptic = cryptics(:inactive)
+    cryptic.update_columns(deactivated_by_sync: true)
+
+    cryptic.change_activation!(true)
+    assert_predicate cryptic.reload, :active?
+    assert_not cryptic.deactivated_by_sync?
+
+    cryptic.change_activation!(false)
+    assert_not cryptic.reload.active?
+    assert_not cryptic.deactivated_by_sync?
+  end
 end

@@ -71,6 +71,11 @@ class Cryptic < ApplicationRecord
     DIFFICULTY_LABELS.fetch(difficulty)
   end
 
+  # Un cambio hecho a mano por un admin: el sync ya no lo reactiva por su cuenta.
+  def change_activation!(active)
+    update!(active: active, deactivated_by_sync: false)
+  end
+
   def enumeration
     return if answer.blank?
 
