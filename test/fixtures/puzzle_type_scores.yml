@@ -1,0 +1,5 @@
+<% Cryptic::PUZZLE_TYPES.each do |puzzle_type| %>
+<%= puzzle_type %>:
+  puzzle_type: <%= puzzle_type %>
+  points: 100
+<% end %>

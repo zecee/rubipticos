@@ -5,6 +5,8 @@ es:
       cryptic: Críptico
       sync_run: Sincronización
       app_setting: Configuración
+      puzzle_type_score: Puntos por tipo
+      difficulty_multiplier: Multiplicador por dificultad
 
     attributes:
       player:
@@ -17,6 +19,14 @@ es:
 
       game:
         cryptic: Críptico
+
+      puzzle_type_score:
+        puzzle_type: Tipo
+        points: Puntos
+
+      difficulty_multiplier:
+        difficulty: Dificultad
+        multiplier: Multiplicador
 
       cryptic:
         external_id: ID de la fuente
