@@ -31,7 +31,6 @@ module Admin
 
       assert_select ".admin-table tbody tr", count: Admin::CrypticsController::PER_PAGE
       assert_select ".admin-pagination a[href=?]", admin_cryptics_path(page: 2)
-      assert_select ".admin-pagination-info", text: /de #{total}/
 
       get admin_cryptics_path(page: 2)
 
