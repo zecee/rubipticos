@@ -148,3 +148,6 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .admin-sidebar, .admin-pagination a { transition: none; }
 }
+
+/* Puntajes */
+.admin-scoring-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: .75rem 1rem; }
