@@ -38,6 +38,53 @@ module Admin
       assert_select ".admin-table tbody tr", count: total - Admin::CrypticsController::PER_PAGE
     end
 
+    test "pagination hides first page arrow on the first page" do
+      create_extra_cryptics(Admin::CrypticsController::PER_PAGE * 2)
+
+      get admin_cryptics_path
+
+      assert_select ".admin-pagination .first_page", count: 0
+      assert_select ".admin-pagination span.previous_page.disabled[aria-disabled=true]"
+      assert_select ".admin-pagination a.next_page[href=?][aria-label=?]", admin_cryptics_path(page: 2), "Página siguiente"
+      assert_select ".admin-pagination a.last_page[href=?][aria-label=?]", admin_cryptics_path(page: 3), "Última página"
+    end
+
+    test "pagination shows every arrow on a middle page" do
+      create_extra_cryptics(Admin::CrypticsController::PER_PAGE * 2)
+
+      get admin_cryptics_path(page: 2)
+
+      assert_select ".admin-pagination a.first_page[href=?][aria-label=?]", admin_cryptics_path(page: 1), "Primera página"
+      assert_select ".admin-pagination a.previous_page[href=?]", admin_cryptics_path(page: 1)
+      assert_select ".admin-pagination a.next_page[href=?]", admin_cryptics_path(page: 3)
+      assert_select ".admin-pagination a.last_page[href=?]", admin_cryptics_path(page: 3)
+      assert_select ".admin-pagination em.current[aria-current=page]", text: "2"
+    end
+
+    test "pagination hides last page arrow on the last page" do
+      create_extra_cryptics(Admin::CrypticsController::PER_PAGE * 2)
+
+      get admin_cryptics_path(page: 3)
+
+      assert_select ".admin-pagination a.first_page[href=?]", admin_cryptics_path(page: 1)
+      assert_select ".admin-pagination span.next_page.disabled"
+      assert_select ".admin-pagination .last_page", count: 0
+    end
+
+    test "pagination shows a window of pages around the current one" do
+      create_extra_cryptics(Admin::CrypticsController::PER_PAGE * 9)
+
+      get admin_cryptics_path(page: 5)
+
+      assert_select ".admin-pagination a[aria-label^='Página '], .admin-pagination em.current",
+                    text: /\A\d+\z/, count: 5
+      assert_select ".admin-pagination em.current", text: "5"
+      assert_select ".admin-pagination a[href=?]", admin_cryptics_path(page: 3)
+      assert_select ".admin-pagination a[href=?]", admin_cryptics_path(page: 7)
+      assert_select ".admin-pagination .gap", count: 2
+      assert_select ".admin-pagination a.admin-pagination__far", count: 2
+    end
+
     test "index falls back to the first page on an invalid page" do
       get admin_cryptics_path(page: "abc")
 
