@@ -29,8 +29,7 @@
         </table>
       </div>
 
-      <%= will_paginate @cryptics, class: "admin-pagination", inner_window: 1, outer_window: 0 %>
-      <p class="admin-pagination-info"><%= page_entries_info @cryptics, model: Cryptic %></p>
+      <%= will_paginate @cryptics, class: "admin-pagination", inner_window: 2, renderer: Admin::PaginationRenderer %>
     <% else %>
       <p class="admin-empty">Todavía no hay crípticos. Corré <code>bin/rails db:seed</code> o sincronizá el catálogo.</p>
     <% end %>
