@@ -66,7 +66,11 @@
     <% end %>
   </div>
 
-  <%= turbo_frame_tag "cryptic_detail", class: "admin-split__detail", data: { turbo_action: "advance" } do %>
+  <%= turbo_frame_tag "cryptic_detail", class: "admin-split__detail", data: {
+                       turbo_action: "advance", controller: "detail-transition",
+                       action: "turbo:before-frame-render->detail-transition#prepare " \
+                               "animationend->detail-transition#finish"
+                     } do %>
     <p class="admin-empty">Elegí un críptico de la lista para ver su detalle.</p>
   <% end %>
 </div>

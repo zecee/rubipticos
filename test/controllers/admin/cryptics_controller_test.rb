@@ -10,7 +10,7 @@ module Admin
       get admin_cryptics_path
 
       assert_response :success
-      assert_select "turbo-frame#cryptic_detail"
+      assert_select "turbo-frame#cryptic_detail[data-controller=detail-transition]"
       assert_select "a[href=?][data-turbo-frame=cryptic_detail]", admin_cryptic_path(cryptic), text: cryptic.external_id
     end
 
