@@ -1,8 +1,66 @@
 <%= render "admin/shared/page_header", title: "Puntajes",
            description: "base = puntos del tipo × multiplicador de la dificultad" %>
-<%= render "admin/shared/pending", items: [
-  "Puntos por tipo de críptico: entero entre 10 y 1000.",
-  "Multiplicador por dificultad: mayor que 0 y hasta 5.",
-  "Aviso de que el cambio solo afecta a las partidas que se resuelvan después.",
-  "Es la única sección que ve el editor de puntajes."
-] %>
+
+<% errors = (@type_scores + @multipliers).flat_map { |rule| rule.errors.full_messages.map { |message| [ rule, message ] } } %>
+
+<%= form_with url: admin_scoring_path, method: :patch, scope: :scoring, class: "admin-form" do %>
+  <p class="admin-flash" role="note">
+    Los cambios solo afectan a las partidas que se resuelvan después de guardarlos.
+    Las partidas ya resueltas conservan sus puntos y la tabla de posiciones no cambia.
+  </p>
+
+  <% if errors.any? %>
+    <div class="admin-flash admin-flash--alert" role="alert">
+      <p>No pudimos guardar los puntajes:</p>
+      <ul>
+        <% errors.each do |rule, message| %>
+          <li><%= rule.try(:puzzle_type_label) || rule.difficulty_label %>: <%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="admin-card" aria-labelledby="type-points-title">
+    <header class="admin-card__header">
+      <h2 id="type-points-title">Puntos por tipo</h2>
+      <p class="admin-field__hint">
+        Número entero entre <%= PuzzleTypeScore::POINTS_RANGE.min %> y <%= PuzzleTypeScore::POINTS_RANGE.max %>.
+      </p>
+    </header>
+
+    <div class="admin-scoring-grid">
+      <% @type_scores.each do |score| %>
+        <div class="admin-field">
+          <%= label_tag "scoring_points_#{score.puzzle_type}", score.puzzle_type_label %>
+          <%= number_field_tag "scoring[points][#{score.puzzle_type}]", score.points,
+                               id: "scoring_points_#{score.puzzle_type}", required: true, step: 1,
+                               min: PuzzleTypeScore::POINTS_RANGE.min, max: PuzzleTypeScore::POINTS_RANGE.max,
+                               aria: { invalid: score.errors.any? || nil } %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="admin-card" aria-labelledby="multipliers-title">
+    <header class="admin-card__header">
+      <h2 id="multipliers-title">Multiplicador por dificultad</h2>
+      <p class="admin-field__hint">Mayor que 0 y hasta <%= DifficultyMultiplier::MAXIMUM %>. Acepta hasta dos decimales.</p>
+    </header>
+
+    <div class="admin-scoring-grid">
+      <% @multipliers.each do |rule| %>
+        <div class="admin-field">
+          <%= label_tag "scoring_multipliers_#{rule.difficulty}", rule.difficulty_label %>
+          <%= number_field_tag "scoring[multipliers][#{rule.difficulty}]", number_with_precision(rule.multiplier, precision: 2, strip_insignificant_zeros: true),
+                               id: "scoring_multipliers_#{rule.difficulty}", required: true, step: 0.01,
+                               min: 0.01, max: DifficultyMultiplier::MAXIMUM,
+                               aria: { invalid: rule.errors.any? || nil } %>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <div>
+    <%= button_tag "Guardar puntajes", class: "admin-button", data: { turbo_submits_with: "Guardando…" } %>
+  </div>
+<% end %>

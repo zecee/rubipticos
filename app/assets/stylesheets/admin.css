@@ -272,6 +272,7 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
   background: #fff; box-shadow: 0 1px 3px rgb(10 15 20 / .35); transition: transform .2s ease;
 }
 .admin-switch[aria-checked="true"] .admin-switch__thumb { transform: translateX(2.25rem); }
+
 /* Mientras se guarda, el interruptor ya muestra el estado nuevo. */
 .admin-switch[aria-checked="true"]:disabled .admin-switch__thumb { transform: none; }
 .admin-switch[aria-checked="false"]:disabled .admin-switch__thumb { transform: translateX(2.25rem); }
@@ -288,3 +289,6 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
   .admin-split__detail[data-transition] > * { animation: none; }
   .admin-switch__track, .admin-switch__thumb, .admin-switch__text { transition: none; }
 }
+
+/* Puntajes */
+.admin-scoring-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: .75rem 1rem; }
