@@ -1,12 +1,35 @@
-<% content_for :header do %>
-  <header class="site-header">
-    <%= link_to "Rubípticos", "/", class: "brand" %>
-    <span>Administración</span>
-  </header>
-<% end %>
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title><%= [ content_for(:title), "Administración · Rubípticos" ].compact.join(" · ") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
 
-<% content_for :content do %>
-  <%= yield %>
-<% end %>
+  <body class="admin" data-controller="sidebar" data-action="keydown.esc@window->sidebar#close">
+    <header class="admin-topbar">
+      <button type="button" class="admin-topbar__toggle" aria-controls="admin-sidebar" aria-expanded="false"
+              data-sidebar-target="toggle" data-action="sidebar#toggle">
+        <span class="visually-hidden">Abrir menú</span>
+        <span aria-hidden="true">☰</span>
+      </button>
+      <span class="admin-topbar__title"><%= content_for(:title) || "Administración" %></span>
+    </header>
 
-<%= render template: "layouts/application" %>
+    <%= render "admin/shared/sidebar" %>
+    <div class="admin-backdrop" data-sidebar-target="backdrop" data-action="click->sidebar#close" hidden></div>
+
+    <main class="admin-main" id="contenido">
+      <% flash.each do |type, message| %>
+        <p class="admin-flash admin-flash--<%= type %>" role="<%= type == "alert" ? "alert" : "status" %>"><%= message %></p>
+      <% end %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

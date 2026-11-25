@@ -1,0 +1,28 @@
+es:
+  will_paginate:
+    previous_label: "&#8592; Anterior"
+    previous_aria_label: "Página anterior"
+    next_label: "Siguiente &#8594;"
+    next_aria_label: "Página siguiente"
+    page_gap: "&hellip;"
+    container_aria_label: "Paginación"
+    page_aria_label: "Página %{page}"
+
+    page_entries_info:
+      single_page:
+        zero: "No hay %{model}"
+        one: "Mostrando 1 %{model}"
+        other: "Mostrando los %{count} %{model}"
+      single_page_html:
+        zero: "No hay %{model}"
+        one: "Mostrando <b>1</b> %{model}"
+        other: "Mostrando <b>los&nbsp;%{count}</b> %{model}"
+
+      multi_page: "Mostrando %{model} %{from} a %{to} de %{count}"
+      multi_page_html: "Mostrando %{model} <b>%{from}&nbsp;a&nbsp;%{to}</b> de <b>%{count}</b>"
+
+    models:
+      cryptic:
+        zero: crípticos
+        one: críptico
+        other: crípticos

@@ -1,0 +1,47 @@
+<%= render "admin/shared/page_header", title: "Crípticos",
+           description: "Catálogo sincronizado desde la fuente. Para sumar o cambiar crípticos, sincronizá." %>
+
+<div class="admin-split">
+  <div class="admin-split__list">
+    <% if @cryptics.any? %>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Enunciado</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Dificultad</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @cryptics.each do |cryptic| %>
+              <tr id="<%= dom_id(cryptic) %>">
+                <td><%= link_to cryptic.external_id, admin_cryptic_path(cryptic), data: { turbo_frame: "cryptic_detail" } %></td>
+                <td><%= cryptic.clue %> <span class="admin-muted"><%= cryptic.enumeration %></span></td>
+                <td><%= puzzle_type_label(cryptic) %></td>
+                <td><%= difficulty_label(cryptic) %></td>
+                <td><%= render "admin/cryptics/status", cryptic: cryptic %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <%= will_paginate @cryptics, class: "admin-pagination", inner_window: 1, outer_window: 0 %>
+      <p class="admin-pagination-info"><%= page_entries_info @cryptics, model: Cryptic %></p>
+    <% else %>
+      <p class="admin-empty">Todavía no hay crípticos. Corré <code>bin/rails db:seed</code> o sincronizá el catálogo.</p>
+    <% end %>
+
+    <%= render "admin/shared/pending", items: [
+      "Filtros por dificultad, tipo, estado y origen.",
+      "Activar y desactivar cada críptico."
+    ] %>
+  </div>
+
+  <%= turbo_frame_tag "cryptic_detail", class: "admin-split__detail", data: { turbo_action: "advance" } do %>
+    <p class="admin-empty">Elegí un críptico de la lista para ver su detalle.</p>
+  <% end %>
+</div>
