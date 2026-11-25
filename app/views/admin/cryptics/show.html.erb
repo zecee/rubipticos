@@ -1,5 +1,5 @@
 <% content_for :title, "Críptico #{@cryptic.external_id}" %>
 
 <%= turbo_frame_tag "cryptic_detail", class: "admin-split__detail" do %>
-  <%= render "admin/cryptics/detail", cryptic: @cryptic %>
+  <%= render "admin/cryptics/detail", cryptic: @cryptic, stats: @stats %>
 <% end %>

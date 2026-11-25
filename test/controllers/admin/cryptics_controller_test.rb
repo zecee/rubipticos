@@ -176,6 +176,26 @@ module Admin
       assert_predicate cryptic.reload, :active?
     end
 
+    test "show includes play stats" do
+      cryptic = cryptics(:easy)
+      player = Player.create!(name: "Jugador")
+      started = 2.minutes.ago
+      Game.insert!({ player_id: player.id, cryptic_id: cryptic.id, status: "IN_PROGRESS",
+                     started_at: started, solved_at: started + 75.seconds })
+
+      get admin_cryptic_path(cryptic)
+
+      assert_select ".admin-stats dd", text: "1"
+      assert_select ".admin-stats dd", text: /100 %/
+      assert_select ".admin-stats dd", text: "1 min 15 s"
+    end
+
+    test "show says when nobody played the cryptic" do
+      get admin_cryptic_path(cryptics(:medium))
+
+      assert_select ".admin-stats", text: /Todavía nadie lo jugó/
+    end
+
     private
 
     def create_extra_cryptics(count)

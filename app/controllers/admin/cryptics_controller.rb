@@ -13,11 +13,13 @@ module Admin
     end
 
     def show
+      @stats = @cryptic.play_stats
     end
 
     def update
       active = params.expect(cryptic: [ :active ]).fetch(:active)
       @cryptic.change_activation!(ActiveModel::Type::Boolean.new.cast(active))
+      @stats = @cryptic.play_stats
 
       respond_to do |format|
         format.turbo_stream

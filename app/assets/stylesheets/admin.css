@@ -163,6 +163,8 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin-filters__actions { display: flex; gap: .75rem; align-items: center; }
 
 /* Detalle de un críptico */
+.admin-stats h3 { margin: 0 0 .35rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--admin-muted); }
+.admin-stats p { margin: 0; }
 .admin .admin-activation { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: 0; }
 .admin-activation .admin-field__hint { flex: 1 1 10rem; }
 .admin-button--danger { background: var(--admin-bad); }

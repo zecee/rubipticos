@@ -67,4 +67,38 @@ class CrypticTest < ActiveSupport::TestCase
     assert_not cryptic.reload.active?
     assert_not cryptic.deactivated_by_sync?
   end
+
+  test "play stats count started games, solved share and average solve time" do
+    cryptic = cryptics(:easy)
+    started = Time.zone.parse("2026-11-20 10:00:00")
+    insert_game(cryptic, started_at: started, solved_at: started + 40.seconds)
+    insert_game(cryptic, started_at: started, solved_at: started + 80.seconds)
+    insert_game(cryptic, started_at: started)
+    insert_game(cryptic) # asignado pero sin arrancar: no cuenta como jugado
+
+    stats = cryptic.play_stats
+
+    assert_equal 3, stats.played_count
+    assert_equal 2, stats.solved_count
+    assert_equal 67, stats.solved_percentage
+    assert_equal 60, stats.average_solve_seconds
+  end
+
+  test "play stats are empty for a cryptic nobody played" do
+    stats = cryptics(:medium).play_stats
+
+    assert_not stats.played?
+    assert_equal 0, stats.solved_percentage
+    assert_nil stats.average_solve_seconds
+  end
+
+  private
+
+  # Las partidas resueltas todavía no se pueden crear desde el modelo: se insertan directo.
+  def insert_game(cryptic, started_at: nil, solved_at: nil)
+    player = Player.create!(name: "Jugador #{Player.count + 1}")
+    status = started_at ? "IN_PROGRESS" : "PREPARED"
+    Game.insert!({ player_id: player.id, cryptic_id: cryptic.id, status: status,
+                   started_at: started_at, solved_at: solved_at })
+  end
 end

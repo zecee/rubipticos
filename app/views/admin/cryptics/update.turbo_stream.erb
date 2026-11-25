@@ -1,5 +1,5 @@
 <%= turbo_stream.update "cryptic_detail" do %>
-  <%= render "admin/cryptics/detail", cryptic: @cryptic %>
+  <%= render "admin/cryptics/detail", cryptic: @cryptic, stats: @stats %>
 <% end %>
 <%= turbo_stream.update dom_id(@cryptic, :status) do %>
   <%= render "admin/cryptics/status", cryptic: @cryptic %>

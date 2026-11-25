@@ -1,4 +1,4 @@
-<%# locals: (cryptic:) -%>
+<%# locals: (cryptic:, stats:) -%>
 <article class="admin-card" aria-labelledby="<%= dom_id(cryptic, :title) %>">
   <header class="admin-card__header">
     <h2 id="<%= dom_id(cryptic, :title) %>">Críptico <%= cryptic.external_id %></h2>
@@ -20,9 +20,18 @@
     <dt>Origen</dt><dd><%= cryptic.source %></dd>
   </dl>
 
-  <%= render "admin/shared/pending", items: [
-    "Estadísticas si existen: veces jugado, porcentaje resuelto y tiempo promedio."
-  ] %>
+  <section class="admin-stats" aria-labelledby="<%= dom_id(cryptic, :stats) %>">
+    <h3 id="<%= dom_id(cryptic, :stats) %>">Estadísticas</h3>
+    <% if stats.played? %>
+      <dl class="admin-details">
+        <dt>Veces jugado</dt><dd><%= stats.played_count %></dd>
+        <dt>Resuelto</dt><dd><%= stats.solved_percentage %> % (<%= stats.solved_count %> de <%= stats.played_count %>)</dd>
+        <dt>Tiempo promedio</dt><dd><%= solve_time(stats.average_solve_seconds) %></dd>
+      </dl>
+    <% else %>
+      <p class="admin-muted">Todavía nadie lo jugó.</p>
+    <% end %>
+  </section>
 
   <%= form_with model: cryptic, url: admin_cryptic_path(cryptic), method: :patch, class: "admin-activation" do |form| %>
     <%= form.hidden_field :active, value: !cryptic.active? %>

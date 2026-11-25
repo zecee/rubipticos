@@ -19,6 +19,18 @@ class Cryptic < ApplicationRecord
   STATUSES = %w[active inactive].freeze
   STATUS_LABELS = { "active" => "Activo", "inactive" => "Inactivo" }.freeze
 
+  PlayStats = Data.define(:played_count, :solved_count, :average_solve_seconds) do
+    def played?
+      played_count.positive?
+    end
+
+    def solved_percentage
+      return 0 unless played?
+
+      (solved_count * 100.0 / played_count).round
+    end
+  end
+
   attr_accessor :source_enumeration
 
   scope :active, -> { where(active: true) }
@@ -74,6 +86,16 @@ class Cryptic < ApplicationRecord
   # Un cambio hecho a mano por un admin: el sync ya no lo reactiva por su cuenta.
   def change_activation!(active)
     update!(active: active, deactivated_by_sync: false)
+  end
+
+  # Partidas jugadas: las que arrancaron el cronómetro. El tiempo promedio es el de las resueltas.
+  def play_stats
+    played, solved, average = games.where.not(started_at: nil).pick(
+      Arel.sql("COUNT(*)"),
+      Arel.sql("COUNT(solved_at)"),
+      Arel.sql("AVG((julianday(solved_at) - julianday(started_at)) * 86400)")
+    )
+    PlayStats.new(played_count: played, solved_count: solved, average_solve_seconds: average&.round)
   end
 
   def enumeration
