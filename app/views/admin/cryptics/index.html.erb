@@ -20,8 +20,8 @@
               <tr id="<%= dom_id(cryptic) %>">
                 <td><%= link_to cryptic.external_id, admin_cryptic_path(cryptic), data: { turbo_frame: "cryptic_detail" } %></td>
                 <td><%= cryptic.clue %> <span class="admin-muted"><%= cryptic.enumeration %></span></td>
-                <td><%= puzzle_type_label(cryptic) %></td>
-                <td><%= difficulty_label(cryptic) %></td>
+                <td><%= cryptic.puzzle_type_label %></td>
+                <td><%= cryptic.difficulty_label %></td>
                 <td><%= render "admin/cryptics/status", cryptic: cryptic %></td>
               </tr>
             <% end %>

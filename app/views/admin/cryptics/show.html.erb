@@ -11,8 +11,8 @@
 
     <dl class="admin-details">
       <dt>Respuesta</dt><dd><strong><%= @cryptic.answer %></strong></dd>
-      <dt>Tipo</dt><dd><%= puzzle_type_label(@cryptic) %></dd>
-      <dt>Dificultad</dt><dd><%= difficulty_label(@cryptic) %></dd>
+      <dt>Tipo</dt><dd><%= @cryptic.puzzle_type_label %></dd>
+      <dt>Dificultad</dt><dd><%= @cryptic.difficulty_label %></dd>
       <dt>Definiciones</dt><dd><%= Array(@cryptic.definitions).to_sentence.presence || "—" %></dd>
       <dt>Indicadores</dt><dd><%= Array(@cryptic.indicators).to_sentence.presence || "—" %></dd>
       <dt>Material</dt><dd><%= Array(@cryptic.material).to_sentence.presence || "—" %></dd>
