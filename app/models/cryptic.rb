@@ -16,6 +16,8 @@ class Cryptic < ApplicationRecord
   DIFFICULTY_LABELS = { "facil" => "Fácil", "medio" => "Medio", "avanzado" => "Avanzado" }.freeze
   MATERIAL_RULE_TYPES = %w[oculta anagrama iniciales finales].freeze
   CONNECTORS = %w[y e o u de del la el los las un una].freeze
+  STATUSES = %w[active inactive].freeze
+  STATUS_LABELS = { "active" => "Activo", "inactive" => "Inactivo" }.freeze
 
   attr_accessor :source_enumeration
 
@@ -24,10 +26,11 @@ class Cryptic < ApplicationRecord
   scope :not_played_by, ->(player) { where.not(id: player.games.select(:cryptic_id)) }
 
   # Filtros del listado del backend. Un valor vacío o desconocido no filtra.
-  def self.filter_by(difficulty: nil, puzzle_type: nil)
+  def self.filter_by(difficulty: nil, puzzle_type: nil, status: nil)
     scope = all
     scope = scope.where(difficulty: difficulty) if DIFFICULTIES.include?(difficulty)
     scope = scope.where(puzzle_type: puzzle_type) if PUZZLE_TYPES.include?(puzzle_type)
+    scope = scope.where(active: status == "active") if STATUSES.include?(status)
     scope
   end
 

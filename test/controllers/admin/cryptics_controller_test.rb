@@ -122,6 +122,14 @@ module Admin
       assert_select "select[name=puzzle_type] option[selected][value=oculta]"
     end
 
+    test "index filters by status" do
+      get admin_cryptics_path(difficulty: "facil", status: "inactive")
+
+      assert_select ".admin-table tbody tr", count: 1
+      assert_select "tr[id=?]", dom_id(cryptics(:inactive))
+      assert_select "select[name=status] option[selected][value=inactive]"
+    end
+
     private
 
     def create_extra_cryptics(count)

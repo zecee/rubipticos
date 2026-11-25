@@ -40,4 +40,10 @@ class CrypticTest < ActiveSupport::TestCase
     assert_empty Cryptic.filter_by(puzzle_type: "oculta", difficulty: "facil")
     assert_equal Cryptic.count, Cryptic.filter_by(puzzle_type: "otro").count
   end
+
+  test "filter_by narrows by status" do
+    assert_equal [ cryptics(:inactive) ], Cryptic.filter_by(status: "inactive").to_a
+    assert_equal [ cryptics(:easy) ], Cryptic.filter_by(difficulty: "facil", status: "active").to_a
+    assert_equal Cryptic.count, Cryptic.filter_by(status: "x").count
+  end
 end
