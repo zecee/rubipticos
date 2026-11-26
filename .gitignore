@@ -35,3 +35,8 @@
 
 # Ignore key files for decrypting credentials and more.
 /config/*.key
+
+# Claude Code: personal/local files (shared config in .claude/ stays tracked)
+.claude/settings.local.json
+.claude/worktrees/
+CLAUDE.local.md
