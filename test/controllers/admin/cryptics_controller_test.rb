@@ -213,6 +213,20 @@ module Admin
       assert_select "[id=?]", dom_id(cryptics(:easy), :activation_label), text: "Activo en el juego"
     end
 
+    test "show warns why a cryptic is inactive" do
+      cryptic = cryptics(:inactive)
+
+      get admin_cryptic_path(cryptic)
+      assert_select ".admin-note--warning", text: /Lo desactivó un administrador/
+
+      cryptic.update_columns(deactivated_by_sync: true)
+      get admin_cryptic_path(cryptic)
+      assert_select ".admin-note--warning", text: /La sincronización lo desactivó/
+
+      get admin_cryptic_path(cryptics(:easy))
+      assert_select ".admin-note--warning", count: 0
+    end
+
     test "show says when nobody played the cryptic" do
       get admin_cryptic_path(cryptics(:medium))
 

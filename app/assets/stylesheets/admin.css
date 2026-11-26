@@ -22,6 +22,9 @@
   --admin-indicator-soft: #ffe9c7;
   --admin-material: #6b3fb5;
   --admin-material-soft: #efe6fb;
+  --admin-warn: #e8a900;
+  --admin-warn-soft: #fff5d1;
+  --admin-warn-ink: #5c4300;
   --admin-sidebar-width: 13.5rem;
 
   margin: 0;
@@ -187,7 +190,7 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin-tag__level span:nth-child(2) { height: 70%; }
 .admin-tag__level span:nth-child(3) { height: 100%; }
 .admin-tag--facil .admin-tag__level .is-on { background: var(--admin-ok); }
-.admin-tag--medio .admin-tag__level .is-on { background: var(--admin-indicator); }
+.admin-tag--medio .admin-tag__level .is-on { background: var(--admin-warn); }
 .admin-tag--avanzado .admin-tag__level .is-on { background: var(--admin-bad); }
 
 /* Partes del críptico: color y estilo de subrayado, para no depender solo del color */
@@ -219,7 +222,15 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin-notes { display: flex; flex-direction: column; gap: .5rem; }
 .admin-note { padding: .55rem .75rem; border-left: 3px solid var(--admin-line); background: var(--admin-bg); font-size: .9rem; }
 .admin-note p { margin: 0; }
-.admin-note--hint { border-color: var(--admin-mark); }
+.admin-note--hint { border-color: var(--admin-accent); }
+/* Advertencia: amarillo de precaución, reservado para avisos que piden atención */
+.admin-note--warning { display: flex; gap: .6rem; border-color: var(--admin-warn); background: var(--admin-warn-soft); color: var(--admin-warn-ink); }
+.admin-note--warning .admin-section-title { color: var(--admin-warn-ink); }
+.admin-note__icon {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; width: 1.35rem; height: 1.2rem;
+  background: var(--admin-warn); color: var(--admin-ink); font-weight: 800; font-size: .8rem;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%); padding-top: .2rem; box-sizing: border-box;
+}
 .admin-note--explanation { border-color: var(--admin-ok); }
 
 .admin-meta { display: flex; flex-direction: column; gap: .35rem; margin: 0; font-size: .9rem; }

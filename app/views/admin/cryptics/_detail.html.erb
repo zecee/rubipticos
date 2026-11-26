@@ -5,6 +5,22 @@
     <%= render "admin/cryptics/status", cryptic: cryptic %>
   </header>
 
+  <% unless cryptic.active? %>
+    <section class="admin-note admin-note--warning" aria-labelledby="<%= dom_id(cryptic, :inactive) %>">
+      <span class="admin-note__icon" aria-hidden="true">!</span>
+      <div>
+        <h3 id="<%= dom_id(cryptic, :inactive) %>" class="admin-section-title">Inactivo</h3>
+        <p>
+          <% if cryptic.deactivated_by_sync? %>
+            La sincronización lo desactivó porque ya no viene en la fuente. Si vuelve a aparecer, se reactiva solo.
+          <% else %>
+            Lo desactivó un administrador. No se asigna en partidas nuevas hasta que lo vuelvas a encender.
+          <% end %>
+        </p>
+      </div>
+    </section>
+  <% end %>
+
   <ul class="admin-tags" aria-label="Clasificación">
     <li class="admin-tag admin-tag--type">
       <span class="visually-hidden">Tipo:</span> <%= cryptic.puzzle_type_label %>
