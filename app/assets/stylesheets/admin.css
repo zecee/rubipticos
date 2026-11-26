@@ -16,6 +16,15 @@
   --admin-ok-soft: #dff3e7;
   --admin-bad: #b3261e;
   --admin-bad-soft: #fde4e2;
+  --admin-definition: #1f4fd1;
+  --admin-definition-soft: #e3ebfd;
+  --admin-indicator: #9a4d00;
+  --admin-indicator-soft: #ffe9c7;
+  --admin-material: #6b3fb5;
+  --admin-material-soft: #efe6fb;
+  --admin-warn: #e8a900;
+  --admin-warn-soft: #fff5d1;
+  --admin-warn-ink: #5c4300;
   --admin-sidebar-width: 13.5rem;
 
   margin: 0;
@@ -147,4 +156,134 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   .admin-sidebar, .admin-pagination a { transition: none; }
+}
+
+/* Filtros de listados */
+.admin .admin-filters {
+  display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: flex-end; margin: 0;
+  padding: .75rem 1rem; background: var(--admin-surface); border: 1px solid var(--admin-line);
+}
+.admin-filters .admin-field { flex: 1 1 10rem; min-width: 0; }
+.admin-field select {
+  padding: .5rem .6rem; font: inherit; font-size: 1rem; box-sizing: border-box; width: 100%;
+  border: 1px solid var(--admin-line); border-radius: .25rem; background: var(--admin-surface); color: var(--admin-ink);
+}
+.admin-field select:focus-visible { outline: 3px solid rgb(31 79 209 / .3); border-color: var(--admin-accent); }
+.admin-filters__actions { display: flex; gap: .75rem; align-items: center; }
+
+/* Detalle de un críptico */
+.admin-card section { margin: 0; }
+.admin-section-title { margin: 0 0 .4rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--admin-muted); }
+.admin-stats p { margin: 0; }
+.admin-stats__empty { font-size: .9rem; color: var(--admin-muted); }
+
+/* Tags de tipo y dificultad */
+.admin-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.admin-tag {
+  display: inline-flex; align-items: center; gap: .4rem; padding: .2rem .65rem; border-radius: 999px;
+  font-size: .8rem; font-weight: 600; border: 1px solid var(--admin-line); background: var(--admin-bg); color: var(--admin-ink);
+}
+.admin-tag--type { background: var(--admin-side); border-color: var(--admin-side); color: #fff; }
+.admin-tag__level { display: inline-flex; gap: 2px; align-items: flex-end; height: .75rem; }
+.admin-tag__level span { width: 4px; border-radius: 1px; background: var(--admin-line); }
+.admin-tag__level span:nth-child(1) { height: 40%; }
+.admin-tag__level span:nth-child(2) { height: 70%; }
+.admin-tag__level span:nth-child(3) { height: 100%; }
+.admin-tag--facil .admin-tag__level .is-on { background: var(--admin-ok); }
+.admin-tag--medio .admin-tag__level .is-on { background: var(--admin-warn); }
+.admin-tag--avanzado .admin-tag__level .is-on { background: var(--admin-bad); }
+
+/* Partes del críptico: color y estilo de subrayado, para no depender solo del color */
+.admin-cryptic-clue .admin-clue { font-size: 1.15rem; line-height: 1.9; }
+.admin-part { color: inherit; padding: .05rem .2rem; border-radius: .2rem; border-bottom: 2px solid; }
+.admin-part--definition { background: var(--admin-definition-soft); border-color: var(--admin-definition); }
+.admin-part--indicator { background: var(--admin-indicator-soft); border-color: var(--admin-indicator); border-bottom-style: dotted; border-bottom-width: 3px; }
+.admin-part--material { background: var(--admin-material-soft); border-color: var(--admin-material); border-bottom-style: dashed; }
+.admin-part--key { display: inline-block; width: .85rem; height: .6rem; margin-right: .4rem; padding: 0; vertical-align: baseline; }
+.admin-parts { display: flex; flex-direction: column; gap: .35rem; margin: .6rem 0 0; font-size: .9rem; }
+.admin-parts__row { display: grid; grid-template-columns: 6.5rem 1fr; gap: .5rem; align-items: baseline; }
+.admin-parts dt { color: var(--admin-muted); white-space: nowrap; }
+.admin-parts dd { margin: 0; display: flex; flex-wrap: wrap; gap: .3rem; }
+.admin-chip { padding: .05rem .45rem; border-radius: .25rem; border: 1px solid; font-size: .8rem; }
+.admin-chip--definition { color: var(--admin-definition); background: var(--admin-definition-soft); border-color: transparent; }
+.admin-chip--indicator { color: var(--admin-indicator); background: var(--admin-indicator-soft); border-color: transparent; }
+.admin-chip--material { color: var(--admin-material); background: var(--admin-material-soft); border-color: transparent; }
+
+/* Respuesta en casillas, como en un crucigrama */
+.admin-answer { display: flex; flex-wrap: wrap; gap: .25rem .75rem; margin: 0; }
+.admin-answer__word { display: inline-flex; flex-wrap: wrap; }
+.admin-answer__cell {
+  display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.95rem; margin-left: -1px;
+  border: 1px solid var(--admin-ink); background: var(--admin-surface); font: 700 1rem ui-monospace, monospace;
+}
+.admin-answer__cell:first-child { margin-left: 0; }
+
+/* Ayuda y explicación */
+.admin-notes { display: flex; flex-direction: column; gap: .5rem; }
+.admin-note { padding: .55rem .75rem; border-left: 3px solid var(--admin-line); background: var(--admin-bg); font-size: .9rem; }
+.admin-note p { margin: 0; }
+.admin-note--hint { border-color: var(--admin-accent); }
+/* Advertencia: amarillo de precaución, reservado para avisos que piden atención */
+.admin-note--warning { display: flex; gap: .6rem; border-color: var(--admin-warn); background: var(--admin-warn-soft); color: var(--admin-warn-ink); }
+.admin-note--warning .admin-section-title { color: var(--admin-warn-ink); }
+.admin-note__icon {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; width: 1.35rem; height: 1.2rem;
+  background: var(--admin-warn); color: var(--admin-ink); font-weight: 800; font-size: .8rem;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%); padding-top: .2rem; box-sizing: border-box;
+}
+.admin-note--explanation { border-color: var(--admin-ok); }
+
+.admin-meta { display: flex; flex-direction: column; gap: .35rem; margin: 0; font-size: .9rem; }
+.admin-meta__row { display: grid; grid-template-columns: 6.5rem 1fr; gap: .5rem; align-items: baseline; }
+.admin-meta dt { color: var(--admin-muted); }
+.admin-meta dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.admin-chip--source { color: var(--admin-ink); background: var(--admin-bg); border-color: var(--admin-line); font-weight: 600; }
+
+/* Estadísticas en tarjetas */
+.admin-stat-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: .5rem; margin: 0; }
+.admin-stat-tile { padding: .5rem .6rem; border: 1px solid var(--admin-line); border-radius: .25rem; background: var(--admin-bg); }
+.admin-stat-tile dt { font-size: .72rem; color: var(--admin-muted); }
+.admin-stat-tile dd { margin: .15rem 0 0; font-size: .95rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.admin-stat-tile small { font-size: .72rem; font-weight: 400; color: var(--admin-muted); }
+.admin .admin-activation { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: 0; }
+.admin-activation .admin-field__hint { flex: 1 0 100%; }
+.admin-activation__label { font-weight: 600; font-size: .9rem; }
+
+/* Interruptor ON/OFF: un botón que envía el estado opuesto */
+.admin-switch { padding: 0; border: 0; background: none; cursor: pointer; border-radius: 999px; }
+.admin-switch:focus-visible { outline: 2px solid var(--admin-accent); outline-offset: 3px; }
+.admin-switch:disabled { cursor: progress; }
+.admin-switch__track {
+  position: relative; display: block; width: 4.25rem; height: 2rem; border-radius: 999px;
+  background: var(--admin-line); transition: background-color .2s ease;
+}
+.admin-switch[aria-checked="true"] .admin-switch__track { background: var(--admin-ok); }
+.admin-switch__text {
+  position: absolute; top: 50%; transform: translateY(-50%); font-size: .72rem; font-weight: 700;
+  letter-spacing: .05em; color: #fff; transition: opacity .2s ease;
+}
+.admin-switch__text--on { left: .6rem; }
+.admin-switch__text--off { right: .55rem; color: var(--admin-ink); }
+.admin-switch[aria-checked="true"] .admin-switch__text--off,
+.admin-switch[aria-checked="false"] .admin-switch__text--on { opacity: 0; }
+.admin-switch__thumb {
+  position: absolute; top: .25rem; left: .25rem; width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px rgb(10 15 20 / .35); transition: transform .2s ease;
+}
+.admin-switch[aria-checked="true"] .admin-switch__thumb { transform: translateX(2.25rem); }
+/* Mientras se guarda, el interruptor ya muestra el estado nuevo. */
+.admin-switch[aria-checked="true"]:disabled .admin-switch__thumb { transform: none; }
+.admin-switch[aria-checked="false"]:disabled .admin-switch__thumb { transform: translateX(2.25rem); }
+.admin-switch:disabled .admin-switch__text { opacity: 0; }
+
+/* Entrada del detalle en el Turbo Frame (ver detail_transition_controller.js) */
+@keyframes admin-detail-slide { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: none; } }
+@keyframes admin-detail-fade { from { opacity: 0; } to { opacity: 1; } }
+.admin-split__detail[data-transition="slide"] { overflow-x: clip; }
+.admin-split__detail[data-transition="slide"] > * { animation: admin-detail-slide .28s ease-out both; }
+.admin-split__detail[data-transition="fade"] > * { animation: admin-detail-fade .2s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-split__detail[data-transition] > * { animation: none; }
+  .admin-switch__track, .admin-switch__thumb, .admin-switch__text { transition: none; }
 }

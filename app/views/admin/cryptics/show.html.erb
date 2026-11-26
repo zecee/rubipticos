@@ -1,32 +1,5 @@
 <% content_for :title, "Críptico #{@cryptic.external_id}" %>
 
 <%= turbo_frame_tag "cryptic_detail", class: "admin-split__detail" do %>
-  <article class="admin-card" aria-labelledby="<%= dom_id(@cryptic, :title) %>">
-    <header class="admin-card__header">
-      <h2 id="<%= dom_id(@cryptic, :title) %>">Críptico <%= @cryptic.external_id %></h2>
-      <%= render "admin/cryptics/status", cryptic: @cryptic %>
-    </header>
-
-    <p class="admin-clue"><%= @cryptic.clue %> <span class="admin-muted"><%= @cryptic.enumeration %></span></p>
-
-    <dl class="admin-details">
-      <dt>Respuesta</dt><dd><strong><%= @cryptic.answer %></strong></dd>
-      <dt>Tipo</dt><dd><%= @cryptic.puzzle_type_label %></dd>
-      <dt>Dificultad</dt><dd><%= @cryptic.difficulty_label %></dd>
-      <dt>Definiciones</dt><dd><%= Array(@cryptic.definitions).to_sentence.presence || "—" %></dd>
-      <dt>Indicadores</dt><dd><%= Array(@cryptic.indicators).to_sentence.presence || "—" %></dd>
-      <dt>Material</dt><dd><%= Array(@cryptic.material).to_sentence.presence || "—" %></dd>
-      <dt>Ayuda</dt><dd><%= @cryptic.hint.presence || "—" %></dd>
-      <dt>Explicación</dt><dd><%= @cryptic.explanation.presence || "—" %></dd>
-      <dt>Autor</dt><dd><%= @cryptic.author.presence || "—" %></dd>
-      <dt>Origen</dt><dd><%= @cryptic.source %></dd>
-    </dl>
-
-    <%= render "admin/shared/pending", items: [
-      "Estadísticas si existen: veces jugado, porcentaje resuelto y tiempo promedio.",
-      "Botón para activar o desactivar."
-    ] %>
-
-    <p><%= link_to "← Volver a Crípticos", admin_cryptics_path, data: { turbo_frame: "_top" } %></p>
-  </article>
+  <%= render "admin/cryptics/detail", cryptic: @cryptic, stats: @stats %>
 <% end %>

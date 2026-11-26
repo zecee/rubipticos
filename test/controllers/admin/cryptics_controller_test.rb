@@ -10,7 +10,7 @@ module Admin
       get admin_cryptics_path
 
       assert_response :success
-      assert_select "turbo-frame#cryptic_detail"
+      assert_select "turbo-frame#cryptic_detail[data-controller=detail-transition]"
       assert_select "a[href=?][data-turbo-frame=cryptic_detail]", admin_cryptic_path(cryptic), text: cryptic.external_id
     end
 
@@ -89,6 +89,148 @@ module Admin
 
       assert_response :success
       assert_select ".admin-table tbody tr", count: Cryptic.count
+    end
+
+    test "index filters by difficulty" do
+      get admin_cryptics_path(difficulty: "medio")
+
+      assert_select ".admin-table tbody tr", count: 1
+      assert_select "tr[id=?]", dom_id(cryptics(:medium))
+      assert_select "select[name=difficulty] option[selected][value=medio]"
+    end
+
+    test "pagination keeps the filters" do
+      create_extra_cryptics(Admin::CrypticsController::PER_PAGE)
+
+      get admin_cryptics_path(difficulty: "facil")
+
+      assert_select ".admin-pagination a[href=?]", admin_cryptics_path(difficulty: "facil", page: 2)
+    end
+
+    test "index says when no cryptic matches the filters" do
+      get admin_cryptics_path(difficulty: "avanzado")
+
+      assert_select ".admin-table", count: 0
+      assert_select ".admin-empty", text: /Ningún críptico coincide/
+    end
+
+    test "index filters by puzzle type" do
+      get admin_cryptics_path(puzzle_type: "oculta")
+
+      assert_select ".admin-table tbody tr", count: 1
+      assert_select "tr[id=?]", dom_id(cryptics(:medium))
+      assert_select "select[name=puzzle_type] option[selected][value=oculta]"
+    end
+
+    test "index filters by status" do
+      get admin_cryptics_path(difficulty: "facil", status: "inactive")
+
+      assert_select ".admin-table tbody tr", count: 1
+      assert_select "tr[id=?]", dom_id(cryptics(:inactive))
+      assert_select "select[name=status] option[selected][value=inactive]"
+    end
+
+    test "index filters by source" do
+      cryptics(:medium).update_columns(source: "propia")
+
+      get admin_cryptics_path(source: "propia")
+
+      assert_select ".admin-table tbody tr", count: 1
+      assert_select "tr[id=?]", dom_id(cryptics(:medium))
+      assert_select "select[name=source] option[selected][value=propia]"
+      assert_select "select[name=source] option[value=test]"
+    end
+
+    test "admin deactivates and reactivates a cryptic with turbo streams" do
+      cryptic = cryptics(:easy)
+
+      patch admin_cryptic_path(cryptic), params: { cryptic: { active: "false" } }, as: :turbo_stream
+
+      assert_response :success
+      assert_not cryptic.reload.active?
+      assert_select "turbo-stream[action=update][target=cryptic_detail]"
+      assert_select "button.admin-switch[role=switch][aria-checked=false]"
+      assert_select "input[type=hidden][name=?][value=true]", "cryptic[active]"
+      assert_select "turbo-stream[action=update][target=?]", dom_id(cryptic, :status)
+
+      patch admin_cryptic_path(cryptic), params: { cryptic: { active: "true" } }
+
+      assert_redirected_to admin_cryptic_path(cryptic)
+      assert_predicate cryptic.reload, :active?
+    end
+
+    test "update only changes the activation" do
+      cryptic = cryptics(:easy)
+
+      patch admin_cryptic_path(cryptic), params: { cryptic: { active: "false", answer: "OTRA" } }
+
+      assert_equal "SECRETO", cryptic.reload.answer
+      assert_not cryptic.active?
+    end
+
+    test "score editor cannot change a cryptic" do
+      sign_in_as users(:two)
+      cryptic = cryptics(:easy)
+
+      patch admin_cryptic_path(cryptic), params: { cryptic: { active: "false" } }
+
+      assert_response :forbidden
+      assert_predicate cryptic.reload, :active?
+    end
+
+    test "show includes play stats" do
+      cryptic = cryptics(:easy)
+      player = Player.create!(name: "Jugador")
+      started = 2.minutes.ago
+      Game.insert!({ player_id: player.id, cryptic_id: cryptic.id, status: "IN_PROGRESS",
+                     started_at: started, solved_at: started + 75.seconds })
+
+      get admin_cryptic_path(cryptic)
+
+      assert_select ".admin-stats dd", text: "1"
+      assert_select ".admin-stats dd", text: /100 %/
+      assert_select ".admin-stats dd", text: "1 min 15 s"
+    end
+
+    test "show highlights the parts of the clue and tags the type" do
+      cryptic = cryptics(:medium)
+
+      get admin_cryptic_path(cryptic)
+
+      assert_select ".admin-clue mark.admin-part--definition", text: /un animal de las corridas/
+      assert_select ".admin-clue mark.admin-part--indicator", text: /esconde/
+      assert_select ".admin-clue mark.admin-part--material", text: /Pato rosado/
+      assert_select ".admin-tag--type", text: /Oculta/
+      assert_select ".admin-tag--medio", text: /Medio/
+      assert_select ".admin-answer__cell", count: 4
+    end
+
+    test "show renders the activation as an on/off switch" do
+      get admin_cryptic_path(cryptics(:easy))
+
+      assert_select "button.admin-switch[role=switch][aria-checked=true]", text: /ON/
+      assert_select "input[type=hidden][name=?][value=false]", "cryptic[active]"
+      assert_select "[id=?]", dom_id(cryptics(:easy), :activation_label), text: "Activo en el juego"
+    end
+
+    test "show warns why a cryptic is inactive" do
+      cryptic = cryptics(:inactive)
+
+      get admin_cryptic_path(cryptic)
+      assert_select ".admin-note--warning", text: /Lo desactivó un administrador/
+
+      cryptic.update_columns(deactivated_by_sync: true)
+      get admin_cryptic_path(cryptic)
+      assert_select ".admin-note--warning", text: /La sincronización lo desactivó/
+
+      get admin_cryptic_path(cryptics(:easy))
+      assert_select ".admin-note--warning", count: 0
+    end
+
+    test "show says when nobody played the cryptic" do
+      get admin_cryptic_path(cryptics(:medium))
+
+      assert_select ".admin-stats", text: /Todavía nadie lo jugó/
     end
 
     private
