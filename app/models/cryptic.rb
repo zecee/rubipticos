@@ -16,12 +16,40 @@ class Cryptic < ApplicationRecord
   DIFFICULTY_LABELS = { "facil" => "Fácil", "medio" => "Medio", "avanzado" => "Avanzado" }.freeze
   MATERIAL_RULE_TYPES = %w[oculta anagrama iniciales finales].freeze
   CONNECTORS = %w[y e o u de del la el los las un una].freeze
+  STATUSES = %w[active inactive].freeze
+  STATUS_LABELS = { "active" => "Activo", "inactive" => "Inactivo" }.freeze
+
+  PlayStats = Data.define(:played_count, :solved_count, :average_solve_seconds) do
+    def played?
+      played_count.positive?
+    end
+
+    def solved_percentage
+      return 0 unless played?
+
+      (solved_count * 100.0 / played_count).round
+    end
+  end
 
   attr_accessor :source_enumeration
 
   scope :active, -> { where(active: true) }
   scope :with_difficulty, ->(difficulty) { where(difficulty: difficulty) }
   scope :not_played_by, ->(player) { where.not(id: player.games.select(:cryptic_id)) }
+
+  # Filtros del listado del backend. Un valor vacío o desconocido no filtra.
+  def self.filter_by(difficulty: nil, puzzle_type: nil, status: nil, source: nil)
+    scope = all
+    scope = scope.where(difficulty: difficulty) if DIFFICULTIES.include?(difficulty)
+    scope = scope.where(puzzle_type: puzzle_type) if PUZZLE_TYPES.include?(puzzle_type)
+    scope = scope.where(active: status == "active") if STATUSES.include?(status)
+    scope = scope.where(source: source) if source.present?
+    scope
+  end
+
+  def self.sources
+    distinct.order(:source).pluck(:source)
+  end
 
   validates :external_id, :clue, :answer, :source, presence: true
   validates :external_id, uniqueness: true
@@ -53,6 +81,21 @@ class Cryptic < ApplicationRecord
 
   def difficulty_label
     DIFFICULTY_LABELS.fetch(difficulty)
+  end
+
+  # Un cambio hecho a mano por un admin: el sync ya no lo reactiva por su cuenta.
+  def change_activation!(active)
+    update!(active: active, deactivated_by_sync: false)
+  end
+
+  # Partidas jugadas: las que arrancaron el cronómetro. El tiempo promedio es el de las resueltas.
+  def play_stats
+    played, solved, average = games.where.not(started_at: nil).pick(
+      Arel.sql("COUNT(*)"),
+      Arel.sql("COUNT(solved_at)"),
+      Arel.sql("AVG((julianday(solved_at) - julianday(started_at)) * 86400)")
+    )
+    PlayStats.new(played_count: played, solved_count: solved, average_solve_seconds: average&.round)
   end
 
   def enumeration
