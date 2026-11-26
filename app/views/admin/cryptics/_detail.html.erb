@@ -35,11 +35,18 @@
 
   <%= form_with model: cryptic, url: admin_cryptic_path(cryptic), method: :patch, class: "admin-activation" do |form| %>
     <%= form.hidden_field :active, value: !cryptic.active? %>
-    <%= form.button cryptic.active? ? "Desactivar" : "Activar",
-                    class: [ "admin-button", ("admin-button--danger" if cryptic.active?) ],
-                    data: { turbo_submits_with: "Guardando…" } %>
-    <p class="admin-field__hint">
-      <%= cryptic.active? ? "Deja de asignarse en partidas nuevas." : "Vuelve a asignarse en partidas nuevas." %>
+    <button type="submit" class="admin-switch" role="switch" aria-checked="<%= cryptic.active? %>"
+            aria-labelledby="<%= dom_id(cryptic, :activation_label) %>"
+            aria-describedby="<%= dom_id(cryptic, :activation_hint) %>">
+      <span class="admin-switch__track" aria-hidden="true">
+        <span class="admin-switch__text admin-switch__text--on">ON</span>
+        <span class="admin-switch__text admin-switch__text--off">OFF</span>
+        <span class="admin-switch__thumb"></span>
+      </span>
+    </button>
+    <span id="<%= dom_id(cryptic, :activation_label) %>" class="admin-activation__label">Activo en el juego</span>
+    <p id="<%= dom_id(cryptic, :activation_hint) %>" class="admin-field__hint">
+      <%= cryptic.active? ? "Se asigna en partidas nuevas. Apagalo para dejar de asignarlo." : "No se asigna en partidas nuevas. Encendelo para volver a asignarlo." %>
     </p>
   <% end %>
 

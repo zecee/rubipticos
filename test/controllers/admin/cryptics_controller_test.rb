@@ -149,6 +149,8 @@ module Admin
       assert_response :success
       assert_not cryptic.reload.active?
       assert_select "turbo-stream[action=update][target=cryptic_detail]"
+      assert_select "button.admin-switch[role=switch][aria-checked=false]"
+      assert_select "input[type=hidden][name=?][value=true]", "cryptic[active]"
       assert_select "turbo-stream[action=update][target=?]", dom_id(cryptic, :status)
 
       patch admin_cryptic_path(cryptic), params: { cryptic: { active: "true" } }
@@ -188,6 +190,14 @@ module Admin
       assert_select ".admin-stats dd", text: "1"
       assert_select ".admin-stats dd", text: /100 %/
       assert_select ".admin-stats dd", text: "1 min 15 s"
+    end
+
+    test "show renders the activation as an on/off switch" do
+      get admin_cryptic_path(cryptics(:easy))
+
+      assert_select "button.admin-switch[role=switch][aria-checked=true]", text: /ON/
+      assert_select "input[type=hidden][name=?][value=false]", "cryptic[active]"
+      assert_select "[id=?]", dom_id(cryptics(:easy), :activation_label), text: "Activo en el juego"
     end
 
     test "show says when nobody played the cryptic" do
