@@ -22,20 +22,20 @@ class AdminSharedComponentsTest < ActionView::TestCase
     assert_select ".admin-card__actions", count: 0
   end
 
-  test "stat renders label, value, optional hint and tone" do
-    render "admin/shared/stat", label: "Crípticos activos", value: "1.234", hint: "de 1.500", tone: "ok"
+  test "kpi renders label, value, optional hint and tone" do
+    render "admin/shared/kpi", label: "Crípticos activos", value: "1.234", hint: "de 1.500", tone: "ok"
 
-    assert_select ".admin-stat.admin-stat--ok" do
-      assert_select "dt.admin-stat__label", text: "Crípticos activos"
-      assert_select "dd.admin-stat__value", text: "1.234"
-      assert_select "dd.admin-stat__hint", text: "de 1.500"
+    assert_select ".admin-kpi.admin-kpi--ok" do
+      assert_select "dt.admin-kpi__label", text: "Crípticos activos"
+      assert_select "dd.admin-kpi__value", text: "1.234"
+      assert_select "dd.admin-kpi__hint", text: "de 1.500"
     end
   end
 
-  test "stat without hint or tone" do
-    render "admin/shared/stat", label: "Jugadores", value: "0"
+  test "kpi without hint or tone" do
+    render "admin/shared/kpi", label: "Jugadores", value: "0"
 
-    assert_select ".admin-stat[class=?]", "admin-stat"
-    assert_select ".admin-stat__hint", count: 0
+    assert_select ".admin-kpi[class=?]", "admin-kpi"
+    assert_select ".admin-kpi__hint", count: 0
   end
 end
