@@ -1,5 +1,4 @@
-# Primer administrador del backend (no hay registro público).
-# La contraseña se puede cambiar con ADMIN_PASSWORD=... bin/rails db:seed
+# Primer administrador del backend
 admin = User.find_or_create_by!(email_address: "admin@rubipticos.test") do |user|
   user.password = ENV.fetch("ADMIN_PASSWORD", "password")
   user.role = "admin"
