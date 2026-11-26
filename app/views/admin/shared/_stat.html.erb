@@ -1,0 +1,7 @@
+<%# locals: (label:, value:, hint: nil, tone: nil) -%>
+<%# Un número destacado. Va dentro de <dl class="admin-stats">; `tone` puede ser ok, bad o accent. -%>
+<div class="<%= class_names("admin-stat", "admin-stat--#{tone}" => tone) %>">
+  <dt class="admin-stat__label"><%= label %></dt>
+  <dd class="admin-stat__value"><%= value %></dd>
+  <% if hint %><dd class="admin-stat__hint"><%= hint %></dd><% end %>
+</div>

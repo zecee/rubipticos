@@ -1,0 +1,10 @@
+<%# locals: (title:, actions: nil, element: :section, modifier: nil) -%>
+<%# Tarjeta con título. Uso: render "admin/shared/card", title: "Fuente", actions: button_to(...) do … end -%>
+<% title_id = "#{title.parameterize}-title" %>
+<%= content_tag element, class: class_names("admin-card", "admin-card--#{modifier}" => modifier), aria: { labelledby: title_id } do %>
+  <header class="admin-card__header">
+    <h2 id="<%= title_id %>"><%= title %></h2>
+    <% if actions %><div class="admin-card__actions"><%= actions %></div><% end %>
+  </header>
+  <%= yield %>
+<% end %>
