@@ -64,10 +64,13 @@
     </div>
   <% end %>
 
-  <dl class="admin-meta">
-    <div><dt>Autor</dt><dd><%= cryptic.author.presence || "—" %></dd></div>
-    <div><dt>Origen</dt><dd><%= cryptic.source %></dd></div>
-  </dl>
+  <section aria-labelledby="<%= dom_id(cryptic, :meta) %>">
+    <h3 id="<%= dom_id(cryptic, :meta) %>" class="admin-section-title">Procedencia</h3>
+    <dl class="admin-meta">
+      <div class="admin-meta__row"><dt>Autor</dt><dd><%= cryptic.author.presence || "Sin autor" %></dd></div>
+      <div class="admin-meta__row"><dt>Origen</dt><dd><span class="admin-chip admin-chip--source"><%= cryptic.source %></span></dd></div>
+    </dl>
+  </section>
 
   <section class="admin-stats" aria-labelledby="<%= dom_id(cryptic, :stats) %>">
     <h3 id="<%= dom_id(cryptic, :stats) %>" class="admin-section-title">Estadísticas</h3>
@@ -81,7 +84,7 @@
         <div class="admin-stat-tile"><dt>Tiempo promedio</dt><dd><%= solve_time(stats.average_solve_seconds) %></dd></div>
       </dl>
     <% else %>
-      <p class="admin-muted">Todavía nadie lo jugó.</p>
+      <p class="admin-stats__empty">Todavía nadie lo jugó.</p>
     <% end %>
   </section>
 

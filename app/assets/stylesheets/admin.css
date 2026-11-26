@@ -172,6 +172,7 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin-card section { margin: 0; }
 .admin-section-title { margin: 0 0 .4rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--admin-muted); }
 .admin-stats p { margin: 0; }
+.admin-stats__empty { font-size: .9rem; color: var(--admin-muted); }
 
 /* Tags de tipo y dificultad */
 .admin-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0; padding: 0; list-style: none; }
@@ -196,7 +197,7 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin-part--indicator { background: var(--admin-indicator-soft); border-color: var(--admin-indicator); border-bottom-style: dotted; border-bottom-width: 3px; }
 .admin-part--material { background: var(--admin-material-soft); border-color: var(--admin-material); border-bottom-style: dashed; }
 .admin-part--key { display: inline-block; width: .85rem; height: .6rem; margin-right: .4rem; padding: 0; vertical-align: baseline; }
-.admin-parts { display: flex; flex-direction: column; gap: .35rem; margin: .6rem 0 0; font-size: .85rem; }
+.admin-parts { display: flex; flex-direction: column; gap: .35rem; margin: .6rem 0 0; font-size: .9rem; }
 .admin-parts__row { display: grid; grid-template-columns: 6.5rem 1fr; gap: .5rem; align-items: baseline; }
 .admin-parts dt { color: var(--admin-muted); white-space: nowrap; }
 .admin-parts dd { margin: 0; display: flex; flex-wrap: wrap; gap: .3rem; }
@@ -221,10 +222,11 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin-note--hint { border-color: var(--admin-mark); }
 .admin-note--explanation { border-color: var(--admin-ok); }
 
-.admin-meta { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; margin: 0; font-size: .82rem; }
-.admin-meta div { display: flex; gap: .35rem; }
+.admin-meta { display: flex; flex-direction: column; gap: .35rem; margin: 0; font-size: .9rem; }
+.admin-meta__row { display: grid; grid-template-columns: 6.5rem 1fr; gap: .5rem; align-items: baseline; }
 .admin-meta dt { color: var(--admin-muted); }
-.admin-meta dd { margin: 0; overflow-wrap: anywhere; }
+.admin-meta dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.admin-chip--source { color: var(--admin-ink); background: var(--admin-bg); border-color: var(--admin-line); font-weight: 600; }
 
 /* Estadísticas en tarjetas */
 .admin-stat-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: .5rem; margin: 0; }
