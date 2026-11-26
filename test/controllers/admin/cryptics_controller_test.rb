@@ -192,6 +192,19 @@ module Admin
       assert_select ".admin-stats dd", text: "1 min 15 s"
     end
 
+    test "show highlights the parts of the clue and tags the type" do
+      cryptic = cryptics(:medium)
+
+      get admin_cryptic_path(cryptic)
+
+      assert_select ".admin-clue mark.admin-part--definition", text: /un animal de las corridas/
+      assert_select ".admin-clue mark.admin-part--indicator", text: /esconde/
+      assert_select ".admin-clue mark.admin-part--material", text: /Pato rosado/
+      assert_select ".admin-tag--type", text: /Oculta/
+      assert_select ".admin-tag--medio", text: /Medio/
+      assert_select ".admin-answer__cell", count: 4
+    end
+
     test "show renders the activation as an on/off switch" do
       get admin_cryptic_path(cryptics(:easy))
 

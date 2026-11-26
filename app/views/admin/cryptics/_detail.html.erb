@@ -5,28 +5,80 @@
     <%= render "admin/cryptics/status", cryptic: cryptic %>
   </header>
 
-  <p class="admin-clue"><%= cryptic.clue %> <span class="admin-muted"><%= cryptic.enumeration %></span></p>
+  <ul class="admin-tags" aria-label="Clasificación">
+    <li class="admin-tag admin-tag--type">
+      <span class="visually-hidden">Tipo:</span> <%= cryptic.puzzle_type_label %>
+    </li>
+    <li class="admin-tag admin-tag--<%= cryptic.difficulty %>">
+      <span class="visually-hidden">Dificultad:</span>
+      <span class="admin-tag__level" aria-hidden="true"><% Cryptic::DIFFICULTIES.each_with_index do |level, i| %><span class="<%= "is-on" if i <= Cryptic::DIFFICULTIES.index(cryptic.difficulty) %>"></span><% end %></span>
+      <%= cryptic.difficulty_label %>
+    </li>
+  </ul>
 
-  <dl class="admin-details">
-    <dt>Respuesta</dt><dd><strong><%= cryptic.answer %></strong></dd>
-    <dt>Tipo</dt><dd><%= cryptic.puzzle_type_label %></dd>
-    <dt>Dificultad</dt><dd><%= cryptic.difficulty_label %></dd>
-    <dt>Definiciones</dt><dd><%= Array(cryptic.definitions).to_sentence.presence || "—" %></dd>
-    <dt>Indicadores</dt><dd><%= Array(cryptic.indicators).to_sentence.presence || "—" %></dd>
-    <dt>Material</dt><dd><%= Array(cryptic.material).to_sentence.presence || "—" %></dd>
-    <dt>Ayuda</dt><dd><%= cryptic.hint.presence || "—" %></dd>
-    <dt>Explicación</dt><dd><%= cryptic.explanation.presence || "—" %></dd>
-    <dt>Autor</dt><dd><%= cryptic.author.presence || "—" %></dd>
-    <dt>Origen</dt><dd><%= cryptic.source %></dd>
+  <section class="admin-cryptic-clue" aria-labelledby="<%= dom_id(cryptic, :clue) %>">
+    <h3 id="<%= dom_id(cryptic, :clue) %>" class="admin-section-title">Enunciado</h3>
+    <p class="admin-clue"><%= highlighted_clue(cryptic) %> <span class="admin-muted"><%= cryptic.enumeration %></span></p>
+
+    <dl class="admin-parts">
+      <% Admin::CrypticsHelper::PART_ROLES.each do |role, config| %>
+        <div class="admin-parts__row">
+          <dt><span class="admin-part admin-part--<%= role %> admin-part--key" aria-hidden="true"></span><%= part_label(role) %></dt>
+          <dd>
+            <% parts = Array(cryptic.public_send(config[:field])) %>
+            <% if parts.any? %>
+              <%= safe_join(parts.map { |part| tag.span(part, class: "admin-chip admin-chip--#{role}") }, " ") %>
+            <% else %>
+              <span class="admin-muted">—</span>
+            <% end %>
+          </dd>
+        </div>
+      <% end %>
+    </dl>
+  </section>
+
+  <section aria-labelledby="<%= dom_id(cryptic, :answer) %>">
+    <h3 id="<%= dom_id(cryptic, :answer) %>" class="admin-section-title">Respuesta</h3>
+    <p class="admin-answer">
+      <span class="visually-hidden"><%= cryptic.answer %></span>
+      <% answer_words(cryptic).each do |letters| %>
+        <span class="admin-answer__word" aria-hidden="true"><% letters.each do |letter| %><span class="admin-answer__cell"><%= letter %></span><% end %></span>
+      <% end %>
+    </p>
+  </section>
+
+  <% if cryptic.hint.present? || cryptic.explanation.present? %>
+    <div class="admin-notes">
+      <% if cryptic.hint.present? %>
+        <section class="admin-note admin-note--hint">
+          <h3 class="admin-section-title">Ayuda</h3>
+          <p><%= cryptic.hint %></p>
+        </section>
+      <% end %>
+      <% if cryptic.explanation.present? %>
+        <section class="admin-note admin-note--explanation">
+          <h3 class="admin-section-title">Explicación</h3>
+          <p><%= cryptic.explanation %></p>
+        </section>
+      <% end %>
+    </div>
+  <% end %>
+
+  <dl class="admin-meta">
+    <div><dt>Autor</dt><dd><%= cryptic.author.presence || "—" %></dd></div>
+    <div><dt>Origen</dt><dd><%= cryptic.source %></dd></div>
   </dl>
 
   <section class="admin-stats" aria-labelledby="<%= dom_id(cryptic, :stats) %>">
-    <h3 id="<%= dom_id(cryptic, :stats) %>">Estadísticas</h3>
+    <h3 id="<%= dom_id(cryptic, :stats) %>" class="admin-section-title">Estadísticas</h3>
     <% if stats.played? %>
-      <dl class="admin-details">
-        <dt>Veces jugado</dt><dd><%= stats.played_count %></dd>
-        <dt>Resuelto</dt><dd><%= stats.solved_percentage %> % (<%= stats.solved_count %> de <%= stats.played_count %>)</dd>
-        <dt>Tiempo promedio</dt><dd><%= solve_time(stats.average_solve_seconds) %></dd>
+      <dl class="admin-stat-tiles">
+        <div class="admin-stat-tile"><dt>Veces jugado</dt><dd><%= stats.played_count %></dd></div>
+        <div class="admin-stat-tile">
+          <dt>Resuelto</dt>
+          <dd><%= stats.solved_percentage %> % <small>(<%= stats.solved_count %> de <%= stats.played_count %>)</small></dd>
+        </div>
+        <div class="admin-stat-tile"><dt>Tiempo promedio</dt><dd><%= solve_time(stats.average_solve_seconds) %></dd></div>
       </dl>
     <% else %>
       <p class="admin-muted">Todavía nadie lo jugó.</p>
