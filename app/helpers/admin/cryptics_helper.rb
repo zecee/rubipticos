@@ -7,12 +7,16 @@ module Admin
       material: { field: :material, label: "Material" }
     }.freeze
 
-    # 75 -> "1 min 15 s"; 42 -> "42 s".
+    # 42 -> "42 s"; 75 -> "1 min 15 s"; 3725 -> "1 h 02 min".
     def solve_time(seconds)
       return "—" if seconds.nil?
 
-      minutes, rest = seconds.divmod(60)
-      minutes.zero? ? "#{rest} s" : "#{minutes} min #{rest.to_s.rjust(2, "0")} s"
+      hours, rest = seconds.divmod(3600)
+      minutes, seconds = rest.divmod(60)
+      return "#{hours} h #{minutes.to_s.rjust(2, "0")} min" if hours.positive?
+      return "#{minutes} min #{seconds.to_s.rjust(2, "0")} s" if minutes.positive?
+
+      "#{seconds} s"
     end
 
     def cryptic_filter_options(labels, selected)

@@ -3,11 +3,12 @@ require "test_helper"
 class AdminCrypticsHelperTest < ActionView::TestCase
   include Admin::CrypticsHelper
 
-  test "solve_time shows seconds alone or minutes with padded seconds" do
+  test "solve_time shows seconds, minutes or hours" do
     assert_equal "—", solve_time(nil)
     assert_equal "42 s", solve_time(42)
     assert_equal "1 min 05 s", solve_time(65)
     assert_equal "12 min 00 s", solve_time(720)
+    assert_equal "1 h 02 min", solve_time(3_725)
   end
 
   test "highlighted_clue marks whole words first and never overlaps parts" do

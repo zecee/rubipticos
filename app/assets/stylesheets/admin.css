@@ -232,7 +232,7 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin-stat-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: .5rem; margin: 0; }
 .admin-stat-tile { padding: .5rem .6rem; border: 1px solid var(--admin-line); border-radius: .25rem; background: var(--admin-bg); }
 .admin-stat-tile dt { font-size: .72rem; color: var(--admin-muted); }
-.admin-stat-tile dd { margin: .15rem 0 0; font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.admin-stat-tile dd { margin: .15rem 0 0; font-size: .95rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 .admin-stat-tile small { font-size: .72rem; font-weight: 400; color: var(--admin-muted); }
 .admin .admin-activation { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: 0; }
 .admin-activation .admin-field__hint { flex: 1 0 100%; }
