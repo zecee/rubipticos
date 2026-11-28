@@ -26,7 +26,12 @@ Rails.application.routes.draw do
       post :reset_leaderboard, on: :collection
     end
     resource :settings, only: %i[show update]
-    resources :users, only: :index
+    resources :users, only: %i[index new create edit update] do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -1,7 +1,46 @@
 <%= render "admin/shared/page_header", title: "Usuarios",
-           description: "Usuarios del backend. No hay registro público." %>
-<%= render "admin/shared/pending", items: [
-  "Alta y edición de usuarios con email, contraseña y rol.",
-  "Desactivar usuarios (un usuario desactivado no puede iniciar sesión).",
-  "Asignar el rol: Administrador o Editor de puntajes."
-] %>
+           description: "Usuarios del backend. No hay registro público: las cuentas se crean desde acá." %>
+
+<p><%= link_to "Nuevo usuario", new_admin_user_path, class: "admin-button" %></p>
+
+<div class="admin-table-wrap">
+  <table class="admin-table admin-table--users">
+    <thead>
+      <tr>
+        <th scope="col">Email</th>
+        <th scope="col">Rol</th>
+        <th scope="col">Estado</th>
+        <th scope="col"><span class="visually-hidden">Acciones</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr id="<%= dom_id(user) %>">
+          <td>
+            <%= user.email_address %>
+            <% if user == current_user %><span class="admin-muted">(vos)</span><% end %>
+          </td>
+          <td><%= user.role_label %></td>
+          <td>
+            <% if user.active? %>
+              <span class="admin-pill admin-pill--ok">Activo</span>
+            <% else %>
+              <span class="admin-pill admin-pill--bad">Inactivo</span>
+            <% end %>
+          </td>
+          <td>
+            <div class="admin-row-actions">
+              <%= link_to "Editar", edit_admin_user_path(user), aria: { label: "Editar #{user.email_address}" } %>
+              <% if !user.active? %>
+                <%= button_to "Activar", activate_admin_user_path(user), method: :patch, class: "admin-link-button" %>
+              <% elsif user != current_user %>
+                <%= button_to "Desactivar", deactivate_admin_user_path(user), method: :patch, class: "admin-link-button",
+                              form: { data: { turbo_confirm: "¿Desactivar a #{user.email_address}? No va a poder iniciar sesión." } } %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
