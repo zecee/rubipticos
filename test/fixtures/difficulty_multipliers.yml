@@ -1,0 +1,11 @@
+facil:
+  difficulty: facil
+  multiplier: 1
+
+medio:
+  difficulty: medio
+  multiplier: 2
+
+avanzado:
+  difficulty: avanzado
+  multiplier: 3

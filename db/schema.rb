@@ -40,6 +40,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_213000) do
     t.index ["external_id"], name: "index_cryptics_on_external_id", unique: true
   end
 
+  create_table "difficulty_multipliers", force: :cascade do |t|
+    t.string "difficulty", null: false
+    t.decimal "multiplier", precision: 3, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["difficulty"], name: "index_difficulty_multipliers_on_difficulty", unique: true
+    t.check_constraint "difficulty IN ('facil', 'medio', 'avanzado')", name: "difficulty_multipliers_difficulty_allowed"
+    t.check_constraint "multiplier > 0 AND multiplier <= 5", name: "difficulty_multipliers_range"
+  end
+
   create_table "games", force: :cascade do |t|
     t.integer "player_id", null: false
     t.integer "cryptic_id", null: false
@@ -63,6 +73,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_213000) do
     t.datetime "blocked_at"
     t.index ["name_key"], name: "index_players_on_name_key", unique: true
     t.index ["token_digest"], name: "index_players_on_token_digest", unique: true
+  end
+
+  create_table "puzzle_type_scores", force: :cascade do |t|
+    t.string "puzzle_type", null: false
+    t.integer "points", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["puzzle_type"], name: "index_puzzle_type_scores_on_puzzle_type", unique: true
+    t.check_constraint "points BETWEEN 10 AND 1000", name: "puzzle_type_scores_points_range"
+    t.check_constraint "puzzle_type IN ('anagrama', 'oculta', 'charada', 'contenedor', 'inversion', 'supresion', 'homofono', 'doble_definicion', 'iniciales', 'finales', 'sustitucion', 'simbolos', 'combinada')", name: "puzzle_type_scores_type_allowed"
   end
 
   create_table "sessions", force: :cascade do |t|

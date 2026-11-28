@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     root "home#show"
     resources :cryptics, only: %i[index show update]
     resources :syncs, only: %i[index create]
-    resource :scoring, only: :show, controller: "scoring"
+    resource :scoring, only: %i[show update], controller: "scoring"
     resources :players, only: :index do
       member do
         patch :block
