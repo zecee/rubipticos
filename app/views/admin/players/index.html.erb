@@ -1,7 +1,68 @@
 <%= render "admin/shared/page_header", title: "Jugadores",
            description: "Los jugadores bloqueados no aparecen en la tabla de posiciones." %>
-<%= render "admin/shared/pending", items: [
-  "Listado con puntaje y racha.",
-  "Bloquear nombres ofensivos.",
-  "Reiniciar la tabla de posiciones, con confirmación."
-] %>
+
+<section class="admin-card" aria-labelledby="leaderboard-reset-title">
+  <header class="admin-card__header">
+    <h2 id="leaderboard-reset-title">Tabla de posiciones</h2>
+    <%= button_to "Reiniciar tabla", reset_leaderboard_admin_players_path, class: "admin-button admin-button--danger",
+                  form: { data: { turbo_confirm: "¿Reiniciar la tabla de posiciones? Solo contarán las partidas resueltas desde ahora. No se puede deshacer." } } %>
+  </header>
+  <p class="admin-card__text">
+    <% if @leaderboard_reset_at %>
+      Último reinicio: <%= l(@leaderboard_reset_at, format: "%d/%m/%Y %H:%M") %>.
+    <% else %>
+      Nunca se reinició.
+    <% end %>
+    Reiniciar no borra partidas ni rachas: la tabla solo cuenta lo resuelto desde ese momento.
+  </p>
+</section>
+
+<% if @players.any? %>
+  <section class="admin-split__list" aria-label="Listado de jugadores">
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Puntaje</th>
+            <th scope="col">Racha</th>
+            <th scope="col">Estado</th>
+            <th scope="col"><span class="visually-hidden">Acciones</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @players.each do |player| %>
+            <tr id="<%= dom_id(player) %>">
+              <td><%= player.name %></td>
+              <td>—</td>
+              <td><%= pluralize(player.current_streak, "día", plural: "días") %></td>
+              <td>
+                <% if player.blocked? %>
+                  <span class="admin-pill admin-pill--bad">Bloqueado</span>
+                <% else %>
+                  <span class="admin-pill admin-pill--ok">Visible</span>
+                <% end %>
+              </td>
+              <td>
+                <% if player.blocked? %>
+                  <%= button_to "Desbloquear", unblock_admin_player_path(player, page: params[:page]), method: :patch,
+                                class: "admin-link-button" %>
+                <% else %>
+                  <%= button_to "Bloquear", block_admin_player_path(player, page: params[:page]), method: :patch,
+                                class: "admin-link-button",
+                                form: { data: { turbo_confirm: "¿Bloquear a #{player.name}? Dejará de aparecer en la tabla de posiciones." } } %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= will_paginate @players, class: "admin-pagination", inner_window: 2, renderer: Admin::PaginationRenderer %>
+  </section>
+<% else %>
+  <p class="admin-empty">Todavía no hay jugadores.</p>
+<% end %>
+
+<%= render "admin/shared/pending", items: [ "Puntaje de cada jugador (depende de las reglas de puntaje)." ] %>

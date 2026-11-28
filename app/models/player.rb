@@ -4,6 +4,10 @@ class Player < ApplicationRecord
   NAME_LENGTH = 3..20
 
   has_many :games, dependent: :restrict_with_exception
+  has_many :solved_games, -> { where.not(solved_at: nil) }, class_name: "Game", inverse_of: :player
+
+  scope :blocked, -> { where.not(blocked_at: nil) }
+  scope :unblocked, -> { where(blocked_at: nil) }
 
   attr_reader :identity_token
 
@@ -29,6 +33,32 @@ class Player < ApplicationRecord
 
     errors.add(:name_key, :taken)
     false
+  end
+
+  def blocked?
+    blocked_at.present?
+  end
+
+  # Bloquea un nombre ofensivo: el jugador deja de aparecer en la tabla de posiciones.
+  def block!
+    update!(blocked_at: Time.current) unless blocked?
+  end
+
+  def unblock!
+    update!(blocked_at: nil)
+  end
+
+  # Días consecutivos con al menos un críptico resuelto, terminando hoy o ayer.
+  # Si ayer no resolvió nada y hoy todavía tampoco, la racha se perdió.
+  def current_streak(today: Time.zone.today)
+    days = solved_games.map { |game| game.solved_at.in_time_zone.to_date }.to_set
+    day = days.include?(today) ? today : today.yesterday
+    streak = 0
+    while days.include?(day)
+      streak += 1
+      day = day.yesterday
+    end
+    streak
   end
 
   def pending_game

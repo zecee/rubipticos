@@ -71,6 +71,8 @@
 .admin-flash--alert { border-color: var(--admin-bad); background: var(--admin-bad-soft); }
 
 .admin-button { display: inline-block; padding: .5rem .9rem; border-radius: .25rem; background: var(--admin-accent); color: #fff !important; text-decoration: none; }
+.admin-button--danger { background: var(--admin-bad); border: 0; font: inherit; cursor: pointer; }
+.admin-link-button { background: none; border: 0; padding: 0; color: var(--admin-accent); text-decoration: underline; font: inherit; cursor: pointer; }
 .admin-muted { color: var(--admin-muted); font-family: ui-monospace, monospace; font-size: .9em; }
 .admin-empty { margin: 0; padding: 1rem; border: 1px dashed var(--admin-line); color: var(--admin-muted); background: var(--admin-surface); }
 
@@ -129,6 +131,7 @@ button.admin-button { border: 0; font: inherit; cursor: pointer; }
 .admin-card { display: flex; flex-direction: column; gap: .75rem; padding: 1rem 1.1rem; background: var(--admin-surface); border: 1px solid var(--admin-line); }
 .admin-card__header { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
 .admin-card__header h2 { margin: 0; font-size: 1.1rem; }
+.admin-card__text { margin: 0; font-size: .9rem; color: var(--admin-muted); }
 .admin-clue { margin: 0; font-size: 1.1rem; }
 .admin-details { display: grid; grid-template-columns: 7.5rem 1fr; gap: .3rem .75rem; margin: 0; font-size: .9rem; }
 .admin-details dt { color: var(--admin-muted); }
