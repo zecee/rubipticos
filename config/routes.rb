@@ -18,9 +18,20 @@ Rails.application.routes.draw do
     resources :cryptics, only: %i[index show update]
     resources :syncs, only: %i[index create]
     resource :scoring, only: %i[show update], controller: "scoring"
-    resources :players, only: :index
+    resources :players, only: :index do
+      member do
+        patch :block
+        patch :unblock
+      end
+      post :reset_leaderboard, on: :collection
+    end
     resource :settings, only: %i[show update]
-    resources :users, only: :index
+    resources :users, only: %i[index new create edit update] do
+      member do
+        patch :activate
+        patch :deactivate
+      end
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

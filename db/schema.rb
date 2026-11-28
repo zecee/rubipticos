@@ -70,6 +70,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_213000) do
     t.string "token_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "blocked_at"
     t.index ["name_key"], name: "index_players_on_name_key", unique: true
     t.index ["token_digest"], name: "index_players_on_token_digest", unique: true
   end

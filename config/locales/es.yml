@@ -7,8 +7,15 @@ es:
       app_setting: Configuración
       puzzle_type_score: Puntos por tipo
       difficulty_multiplier: Multiplicador por dificultad
+      user: Usuario
 
     attributes:
+      user:
+        email_address: Email
+        password: Contraseña
+        password_confirmation: Confirmación de contraseña
+        role: Rol
+        active: Activo
       player:
         name: Nombre
         name_key: Nombre

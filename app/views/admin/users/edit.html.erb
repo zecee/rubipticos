@@ -1,0 +1,5 @@
+<%= render "admin/shared/page_header", title: "Editar usuario", description: @user.email_address_was %>
+
+<section class="admin-card admin-card--narrow">
+  <%= render "form", user: @user %>
+</section>
